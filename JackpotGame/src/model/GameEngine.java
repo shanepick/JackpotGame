@@ -49,7 +49,7 @@ public class GameEngine {
 			throw new IllegalArgumentException(Integer.toString(tileNum));
 		if(tilesState[tileNum-1] ==  false  && isValidMove(tileNum)){
 			tilesState[tileNum-1] = true;
-			display.flipTile(tileNum);
+			display.updateTiles(tilesState);
 			if(++numTilesFlipped == NUM_TILES){
 				numWins++;
 				display.gameWonUpdate();
