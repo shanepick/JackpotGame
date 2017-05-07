@@ -29,12 +29,12 @@ public class TileListener extends MouseAdapter{
 			if(y > GameBoxPanel.EDGE_WIDTH && y < GameBoxPanel.TILE_HEIGHT + GameBoxPanel.EDGE_WIDTH){
 				for(int i = 0; i < GUI.NUM_TILES; i++){
 					if(x > 80 + i * GameBoxPanel.TILE_WIDTH && x < 80 + (i+1) * GameBoxPanel.TILE_WIDTH){
-						tileSelected = i + 1;
+						gameBoxPanel.flipTiles(i+1);
 						break;
 					}
 				}
 			}
-			System.out.println("tile selected was " + tileSelected);
+			//System.out.println("tile selected was " + tileSelected);
 		} catch (NoninvertibleTransformException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
