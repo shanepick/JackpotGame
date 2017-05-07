@@ -10,10 +10,12 @@ public class TextDisplay implements Display{
 	
 	char startTiles[] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 	char flippedTiles[] = { '*', 'J', 'A', 'C', 'K', 'P', 'O', 'T', '*' };
-	private static final int NUM_TILES = 9;
+	char Tiles[];
 	Scanner scan;
 	
 	public TextDisplay(){
+		Tiles = Arrays.copyOf(startTiles,startTiles.length);
+		scan = new Scanner(System.in); 
 	}
 	
 	@Override
@@ -28,13 +30,10 @@ public class TextDisplay implements Display{
 	}
 
 	@Override
-	public void updateTiles(boolean tilesState[]) {
-        for(int i = 0; i < NUM_TILES; i++){
-        	if(tilesState[i] == false)
-        		System.out.print(startTiles[i] + " ");
-        	else
-        		System.out.print(flippedTiles[i] + " ");
-        }
+	public void flipTile(int tileNum) {
+		Tiles[tileNum - 1] = flippedTiles[tileNum - 1];
+        for(int i = 0; i < Tiles.length; i++)
+        	System.out.print(Tiles[i] + " ");
         System.out.println();
 	}
 
@@ -65,8 +64,9 @@ public class TextDisplay implements Display{
 
 	@Override
 	public void newGameUpdate() {
-        for(int i = 0; i < startTiles.length; i++)
-        	System.out.print(startTiles[i] + " ");
+		Tiles = Arrays.copyOf(startTiles,startTiles.length);
+        for(int i = 0; i < Tiles.length; i++)
+        	System.out.print(Tiles[i] + " ");
         System.out.println();
 	}
 

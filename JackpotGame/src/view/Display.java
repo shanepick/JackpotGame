@@ -10,7 +10,7 @@ public interface Display {
 	
 	public void updateDiceFinal(DiceResult dice);
 	
-	public void updateTiles(boolean tileStates[]);
+	public void flipTile(int tileNum);
 	
 	public void invalidTileUpdate(GameEngine.InvalidTileStatus status);
 	
