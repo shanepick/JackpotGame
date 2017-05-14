@@ -98,6 +98,9 @@ public class GameBoxPanel extends JPanel{
 		height = getHeight();
 		width = getWidth();
 		//Graphics2D g2d = (Graphics2D) g;
+		//TODO move dieimages to class variables.
+		DieView dieImage1 = new DieView(3);
+		DieView dieImage2 = new DieView(4);
 		BufferedImage bufferedImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) bufferedImage.createGraphics();
 		//super.paintComponent(g2d);
@@ -111,6 +114,8 @@ public class GameBoxPanel extends JPanel{
 		scaleTransform.scale(scaleFactor, scaleFactor);
 		g2d.setTransform(scaleTransform);
 		g2d.drawImage(image,60,0,this);
+		g2d.drawImage(dieImage1,275,150,this);
+		g2d.drawImage(dieImage2,360,150,this);
 		for(int i = 0; i < tilesState.length; ++i){
 			int xCor = 60 + EDGE_WIDTH + i * TILE_WIDTH;
 			if(tilesState[i] == false)
@@ -118,8 +123,8 @@ public class GameBoxPanel extends JPanel{
 			else
 				g2d.drawImage(flippedTileImages[i], xCor, EDGE_WIDTH -14, this);
 		}
-		c.insets = new Insets( (int) scaleFactor * 200, (int) scaleFactor * 30, (int) scaleFactor * 30, (int) scaleFactor * 30);
-		revalidate();
+		//c.insets = new Insets( (int) scaleFactor * 200, (int) scaleFactor * 30, (int) scaleFactor * 30, (int) scaleFactor * 30);
+		//revalidate();
 		super.paintComponent(g);
 		g.drawImage(bufferedImage,0,0,this);
 		
