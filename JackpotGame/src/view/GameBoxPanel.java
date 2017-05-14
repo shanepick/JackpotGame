@@ -1,15 +1,27 @@
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import Controller.TileListener;
@@ -25,7 +37,8 @@ public class GameBoxPanel extends JPanel{
 	public static final int EDGE_WIDTH = 20;
 	AffineTransform scaleTransform;
 	boolean tilesState[];
-	
+	JPanel test = new JPanel();
+	GridBagConstraints c = new GridBagConstraints();
 	
 	public GameBoxPanel() {
 		tilesState = new boolean[GUI.NUM_TILES];
@@ -59,10 +72,26 @@ public class GameBoxPanel extends JPanel{
 	    }
 		this.setSize(new Dimension(580,340));
 		this.addMouseListener(new TileListener());
+		this.setBackground(Color.cyan);
+		
+		
+		
+		this.setLayout(new GridBagLayout());
+		//this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+		//this.setLayout(null);
+		//test.setBackground(Color.BLACK);
+		//test.setPreferredSize(new Dimension(200,100));
+		
+		//c.weighty = 0.5;
+		//c.anchor = GridBagConstraints.PAGE_END;
+		//c.insets = new Insets(200,30,30,30);
+		//c.fill = GridBagConstraints.VERTICAL;
+		//this.add(test,c);
 	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
+
 		//perhaps change to paint everything to buffered image first. 
 		int height, width;
 		double scaleFactor;
@@ -77,6 +106,7 @@ public class GameBoxPanel extends JPanel{
 		System.out.println(width);
 		scaleFactor = width / 698.0;
 		//g2d.scale(scaleFactor,scaleFactor);
+		//TODO crate AffineTransform once in constructor instead of every time.
 		scaleTransform = new AffineTransform();
 		scaleTransform.scale(scaleFactor, scaleFactor);
 		g2d.setTransform(scaleTransform);
@@ -88,8 +118,16 @@ public class GameBoxPanel extends JPanel{
 			else
 				g2d.drawImage(flippedTileImages[i], xCor, EDGE_WIDTH -14, this);
 		}
+		c.insets = new Insets( (int) scaleFactor * 200, (int) scaleFactor * 30, (int) scaleFactor * 30, (int) scaleFactor * 30);
+		revalidate();
 		super.paintComponent(g);
 		g.drawImage(bufferedImage,0,0,this);
+		
+		//Point dicePanelDimensions = new Point();
+		//scaleTransform.transform(new Point(250,60),dicePanelDimensions);
+		//test.setSize(dicePanelDimensions.x,dicePanelDimensions.y);
+		
+		
 		
 	}
 	
@@ -100,5 +138,16 @@ public class GameBoxPanel extends JPanel{
 	public void flipTiles(int tileNum){
 		tilesState[tileNum - 1] = true;
 		this.repaint();
+	}
+	
+	@Override
+	public Dimension getPreferredSize() {
+		Container parent = this.getParent();
+		int width = parent.getWidth();
+	    return new Dimension(width, (int) (width/2.0) );
+	}
+	
+	public Dimension getMinimumSize() {
+		return getPreferredSize();
 	}
 }
