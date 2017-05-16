@@ -37,12 +37,13 @@ public class GameBoxPanel extends JPanel{
 	public static final int TILE_HEIGHT = 80;
 	public static final int EDGE_WIDTH = 20;
 	private static final int DICE_GAP = 20;
-	AffineTransform scaleTransform;
-	boolean tilesState[];
-	JPanel test = new JPanel();
-	GridBagConstraints c = new GridBagConstraints();
-	GridBagConstraints d = new GridBagConstraints();
-	JLabel instructionLabel;
+	private AffineTransform scaleTransform;
+	private boolean tilesState[];
+	private JPanel test = new JPanel();
+	private GridBagConstraints c = new GridBagConstraints();
+	private GridBagConstraints d = new GridBagConstraints();
+	private JLabel instructionLabel;
+	private int leftOffset = 0;
 	
 	public GameBoxPanel() {
 		tilesState = new boolean[GUI.NUM_TILES];
@@ -76,7 +77,7 @@ public class GameBoxPanel extends JPanel{
 	    }
 		//this.setSize(new Dimension(580,340));
 		this.addMouseListener(new TileListener());
-		//this.setBackground(Color.cyan);
+		this.setBackground(Color.cyan);
 		instructionLabel = new JLabel("Click on dice to roll");
 		instructionLabel.setForeground(Color.WHITE);
 		instructionLabel.setFont(new Font("SansSerif",Font.BOLD,18));
@@ -122,22 +123,24 @@ public class GameBoxPanel extends JPanel{
 		//super.paintComponent(g2d);
 
 		//g2d.drawImage(image,60,0,this);
-		System.out.println(width);
-		scaleFactor = width / 698.0;
-		//g2d.scale(scaleFactor,scaleFactor);
+		System.out.println("width is " +width);
+		System.out.println("height is: " +height);
+		scaleFactor = Math.min( (width / 698.0), (height/349.0));
+		System.out.println("scale factor is " + scaleFactor);
+		g2d.scale(scaleFactor,scaleFactor);
 		//TODO crate AffineTransform once in constructor instead of every time.
 		scaleTransform = new AffineTransform();
 		scaleTransform.scale(scaleFactor, scaleFactor);
 		g2d.setTransform(scaleTransform); 
-		g2d.drawImage(image,60,0,this);
-		int die1_xCor = (698/2) - DieView.DICESIZE - (DICE_GAP/ 2);
+		g2d.drawImage(image,0,0,this);
+		int die1_xCor = (580/2) - DieView.DICESIZE - (DICE_GAP/ 2);
 		System.out.println(die1_xCor);
 		int die2_xCor = die1_xCor + DieView.DICESIZE + DICE_GAP;
 		System.out.println(die2_xCor);
 		g2d.drawImage(dieImage1,die1_xCor,150,this);
 		g2d.drawImage(dieImage2,die2_xCor,150,this);
 		for(int i = 0; i < tilesState.length; ++i){
-			int xCor = 60 + EDGE_WIDTH + i * TILE_WIDTH;
+			int xCor = EDGE_WIDTH + i * TILE_WIDTH;
 			if(tilesState[i] == false)
 				g2d.drawImage(startTileImages[i], xCor, EDGE_WIDTH, this);
 			else
@@ -146,7 +149,9 @@ public class GameBoxPanel extends JPanel{
 		//c.insets = new Insets( (int) scaleFactor * 200, (int) scaleFactor * 30, (int) scaleFactor * 30, (int) scaleFactor * 30);
 		//revalidate();
 		super.paintComponent(g);
-		g.drawImage(bufferedImage,0,0,this);
+		leftOffset = (int) ((width - (scaleFactor * 580))/2 );
+		System.out.println("leftOffset is" + leftOffset);
+		g.drawImage(bufferedImage,leftOffset,0,this);
 		
 		//Point dicePanelDimensions = new Point();
 		//scaleTransform.transform(new Point(250,60),dicePanelDimensions);
@@ -167,6 +172,9 @@ public class GameBoxPanel extends JPanel{
 	
 	@Override
 	public Dimension getPreferredSize() {
+		//Dimension test = super.getPreferredSize();
+		//System.out.print("PreferredSize is" + test);
+		//return test;
 		Container parent = this.getParent();
 		int width = parent.getWidth();
 	    return new Dimension(width, (int) (width/2.0) );
@@ -174,5 +182,9 @@ public class GameBoxPanel extends JPanel{
 	
 	public Dimension getMinimumSize() {
 		return getPreferredSize();
+	}
+	
+	public int getLeftOffset() {
+		return leftOffset;
 	}
 }

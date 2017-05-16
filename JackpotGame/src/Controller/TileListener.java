@@ -18,7 +18,7 @@ public class TileListener extends MouseAdapter{
 		try {
 			inverseTransform = gameBoxPanel.getScaleTransform().createInverse();
 			Point deScaled = new Point();
-			inverseTransform.transform(new Point(e.getX(),e.getY()), deScaled);
+			inverseTransform.transform(new Point(e.getX() - gameBoxPanel.getLeftOffset(),e.getY()), deScaled);
 			int x = deScaled.x;
 			int y = deScaled.y;
 			System.out.println(x + "," + y);
@@ -28,7 +28,8 @@ public class TileListener extends MouseAdapter{
 			//int panelWidth = gameBoxPanel.getWidth();
 			if(y > GameBoxPanel.EDGE_WIDTH && y < GameBoxPanel.TILE_HEIGHT + GameBoxPanel.EDGE_WIDTH){
 				for(int i = 0; i < GUI.NUM_TILES; i++){
-					if(x > 80 + i * GameBoxPanel.TILE_WIDTH && x < 80 + (i+1) * GameBoxPanel.TILE_WIDTH){
+					if(x > 20 + i * GameBoxPanel.TILE_WIDTH && 
+							x <  20 + (i+1) * GameBoxPanel.TILE_WIDTH){
 						gameBoxPanel.flipTiles(i+1);
 						break;
 					}
