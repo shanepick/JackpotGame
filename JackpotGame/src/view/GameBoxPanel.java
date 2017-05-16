@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -35,10 +36,13 @@ public class GameBoxPanel extends JPanel{
 	public static final int TILE_WIDTH = 60;
 	public static final int TILE_HEIGHT = 80;
 	public static final int EDGE_WIDTH = 20;
+	private static final int DICE_GAP = 20;
 	AffineTransform scaleTransform;
 	boolean tilesState[];
 	JPanel test = new JPanel();
 	GridBagConstraints c = new GridBagConstraints();
+	GridBagConstraints d = new GridBagConstraints();
+	JLabel instructionLabel;
 	
 	public GameBoxPanel() {
 		tilesState = new boolean[GUI.NUM_TILES];
@@ -70,10 +74,12 @@ public class GameBoxPanel extends JPanel{
 	        System.err.println("An error occurred: tile image file could not be opened.");
 	        System.exit(1);
 	    }
-		this.setSize(new Dimension(580,340));
+		//this.setSize(new Dimension(580,340));
 		this.addMouseListener(new TileListener());
-		this.setBackground(Color.cyan);
-		
+		//this.setBackground(Color.cyan);
+		instructionLabel = new JLabel("Click on dice to roll");
+		instructionLabel.setForeground(Color.WHITE);
+		instructionLabel.setFont(new Font("SansSerif",Font.BOLD,18));
 		
 		
 		this.setLayout(new GridBagLayout());
@@ -82,11 +88,21 @@ public class GameBoxPanel extends JPanel{
 		//test.setBackground(Color.BLACK);
 		//test.setPreferredSize(new Dimension(200,100));
 		
-		//c.weighty = 0.5;
+		c.weighty = 0.3;
 		//c.anchor = GridBagConstraints.PAGE_END;
 		//c.insets = new Insets(200,30,30,30);
-		//c.fill = GridBagConstraints.VERTICAL;
+		c.fill = GridBagConstraints.VERTICAL;
+		c.gridx = 0;
+		c.gridy = 0;
+		
+		d.weighty = 0.6;
+		d.fill = GridBagConstraints.VERTICAL;
+		d.gridx = 0;
+		d.gridy = 1;
 		//this.add(test,c);
+		this.add(new JLabel(""),c);
+		this.add(instructionLabel,d);
+		
 	}
 	
 	@Override
@@ -99,8 +115,8 @@ public class GameBoxPanel extends JPanel{
 		width = getWidth();
 		//Graphics2D g2d = (Graphics2D) g;
 		//TODO move dieimages to class variables.
-		DieView dieImage1 = new DieView(3);
-		DieView dieImage2 = new DieView(4);
+		DieView dieImage1 = new DieView(2);
+		DieView dieImage2 = new DieView(5);
 		BufferedImage bufferedImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) bufferedImage.createGraphics();
 		//super.paintComponent(g2d);
@@ -112,10 +128,14 @@ public class GameBoxPanel extends JPanel{
 		//TODO crate AffineTransform once in constructor instead of every time.
 		scaleTransform = new AffineTransform();
 		scaleTransform.scale(scaleFactor, scaleFactor);
-		g2d.setTransform(scaleTransform);
+		g2d.setTransform(scaleTransform); 
 		g2d.drawImage(image,60,0,this);
-		g2d.drawImage(dieImage1,275,150,this);
-		g2d.drawImage(dieImage2,360,150,this);
+		int die1_xCor = (698/2) - DieView.DICESIZE - (DICE_GAP/ 2);
+		System.out.println(die1_xCor);
+		int die2_xCor = die1_xCor + DieView.DICESIZE + DICE_GAP;
+		System.out.println(die2_xCor);
+		g2d.drawImage(dieImage1,die1_xCor,150,this);
+		g2d.drawImage(dieImage2,die2_xCor,150,this);
 		for(int i = 0; i < tilesState.length; ++i){
 			int xCor = 60 + EDGE_WIDTH + i * TILE_WIDTH;
 			if(tilesState[i] == false)

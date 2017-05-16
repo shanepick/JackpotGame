@@ -28,8 +28,8 @@ public class GUI extends JFrame{
 		this.setSize(700, 500);
 		this.setLocationRelativeTo(null);
 		JLabel title = new JLabel("JACKPOT GAME");
-		title.setBackground(Color.YELLOW);
-		title.setOpaque(true);
+		//title.setBackground(Color.YELLOW);
+		//title.setOpaque(true);
 		title.setFont(new Font("serif",0,34));
 		//title.setAlignmentX(CENTER_ALIGNMENT);
 		title.setBorder(new EmptyBorder(30,30,30,30));
