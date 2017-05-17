@@ -35,10 +35,15 @@ public class GameMenuBar extends JMenuBar{
 		viewMenu = new JMenu("View");
 		viewMenu.setMnemonic(KeyEvent.VK_V);
 		colorMenu = new JMenu("Select Felt Color");
+		colorMenu.setMnemonic(KeyEvent.VK_F);
 		JMenuItem blue = new JRadioButtonMenuItem("Blue");
+		blue.setMnemonic(KeyEvent.VK_B);
 		JMenuItem green = new JRadioButtonMenuItem("Green");
+		green.setMnemonic(KeyEvent.VK_G);
 		JMenuItem red = new JRadioButtonMenuItem("Red");
+		red.setMnemonic(KeyEvent.VK_R);
 		JMenuItem black = new JRadioButtonMenuItem("Black");
+		black.setMnemonic(KeyEvent.VK_L);
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(blue);
 		bg.add(green);
