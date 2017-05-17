@@ -13,7 +13,10 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -25,7 +28,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import Controller.TileListener;
+
 
 @SuppressWarnings("serial")
 public class GameBoxPanel extends JPanel{
@@ -44,6 +47,7 @@ public class GameBoxPanel extends JPanel{
 	private GridBagConstraints d = new GridBagConstraints();
 	private JLabel instructionLabel;
 	private int leftOffset = 0;
+	private int die1_xCor, die2_xCor, die_yCor = 150;
 	
 	public GameBoxPanel() {
 		tilesState = new boolean[GUI.NUM_TILES];
@@ -133,12 +137,12 @@ public class GameBoxPanel extends JPanel{
 		scaleTransform.scale(scaleFactor, scaleFactor);
 		g2d.setTransform(scaleTransform); 
 		g2d.drawImage(image,0,0,this);
-		int die1_xCor = (580/2) - DieView.DICESIZE - (DICE_GAP/ 2);
+		die1_xCor = (580/2) - DieView.DICESIZE - (DICE_GAP/ 2);
 		System.out.println(die1_xCor);
-		int die2_xCor = die1_xCor + DieView.DICESIZE + DICE_GAP;
+		die2_xCor = die1_xCor + DieView.DICESIZE + DICE_GAP;
 		System.out.println(die2_xCor);
-		g2d.drawImage(dieImage1,die1_xCor,150,this);
-		g2d.drawImage(dieImage2,die2_xCor,150,this);
+		g2d.drawImage(dieImage1,die1_xCor,die_yCor,this);
+		g2d.drawImage(dieImage2,die2_xCor,die_yCor,this);
 		for(int i = 0; i < tilesState.length; ++i){
 			int xCor = EDGE_WIDTH + i * TILE_WIDTH;
 			if(tilesState[i] == false)
@@ -184,7 +188,41 @@ public class GameBoxPanel extends JPanel{
 		return getPreferredSize();
 	}
 	
-	public int getLeftOffset() {
-		return leftOffset;
+	private class TileListener extends MouseAdapter{
+
+		public void mouseClicked(MouseEvent e){
+			AffineTransform inverseTransform;
+			try {
+				inverseTransform = scaleTransform.createInverse();
+				Point deScaled = new Point();
+				inverseTransform.transform(new Point(e.getX() - leftOffset,e.getY()), deScaled);
+				int x = deScaled.x;
+				int y = deScaled.y;
+				System.out.println(x + "," + y);
+				int tileSelected = 0;
+				//TODO change to left click only.
+				
+				//int panelWidth = gameBoxPanel.getWidth();
+				if(y > EDGE_WIDTH && y < TILE_HEIGHT + EDGE_WIDTH){
+					for(int i = 0; i < GUI.NUM_TILES; i++){
+						if(x > 20 + i * TILE_WIDTH && 
+								x <  20 + (i+1) * TILE_WIDTH){
+							flipTiles(i+1);
+							break;
+						}
+					}
+				}
+				/*int die_y = gameBoxPanel.getDie_yCor();
+				int die_x = gameBoxPanel.getDie1_xCor();
+				else if(y >= die_y && y<= die_y + DieView.DICESIZE  && x >= die_x && x <= die_x + )*/
+				//System.out.println("tile selected was " + tileSelected);
+			} catch (NoninvertibleTransformException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+		}
 	}
+	
+	
 }
