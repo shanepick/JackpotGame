@@ -42,7 +42,7 @@ public class GameBoxPanel extends JPanel{
 	private static final int DICE_GAP = 20;
 	private AffineTransform scaleTransform;
 	private boolean tilesState[];
-	private JPanel test = new JPanel();
+	private DieView dieImage1, dieImage2;
 	private GridBagConstraints c = new GridBagConstraints();
 	private GridBagConstraints d = new GridBagConstraints();
 	private JLabel instructionLabel;
@@ -52,6 +52,8 @@ public class GameBoxPanel extends JPanel{
 	public GameBoxPanel() {
 		tilesState = new boolean[GUI.NUM_TILES];
 		Arrays.fill(tilesState, false);
+		dieImage1 = new DieView(2);
+		dieImage2 = new DieView(5);
 		try {                
 			image = ImageIO.read(new File("images/board.png"));
 	    } catch (IOException ex) {
@@ -119,9 +121,6 @@ public class GameBoxPanel extends JPanel{
 		height = getHeight();
 		width = getWidth();
 		//Graphics2D g2d = (Graphics2D) g;
-		//TODO move dieimages to class variables.
-		DieView dieImage1 = new DieView(2);
-		DieView dieImage2 = new DieView(5);
 		BufferedImage bufferedImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) bufferedImage.createGraphics();
 		//super.paintComponent(g2d);
@@ -165,10 +164,6 @@ public class GameBoxPanel extends JPanel{
 		
 	}
 	
-	public AffineTransform getScaleTransform() {
-		return scaleTransform;
-	}
-	
 	public void flipTiles(int tileNum){
 		tilesState[tileNum - 1] = true;
 		this.repaint();
@@ -205,16 +200,18 @@ public class GameBoxPanel extends JPanel{
 				//int panelWidth = gameBoxPanel.getWidth();
 				if(y > EDGE_WIDTH && y < TILE_HEIGHT + EDGE_WIDTH){
 					for(int i = 0; i < GUI.NUM_TILES; i++){
-						if(x > 20 + i * TILE_WIDTH && 
-								x <  20 + (i+1) * TILE_WIDTH){
+						if(x > 20 + i * TILE_WIDTH && x <  20 + (i+1) * TILE_WIDTH){
 							flipTiles(i+1);
 							break;
 						}
 					}
 				}
-				/*int die_y = gameBoxPanel.getDie_yCor();
-				int die_x = gameBoxPanel.getDie1_xCor();
-				else if(y >= die_y && y<= die_y + DieView.DICESIZE  && x >= die_x && x <= die_x + )*/
+				else if(y >= die_yCor && y<= die_yCor + DieView.DICESIZE  
+						&& x >= die1_xCor && x <= die2_xCor + DieView.DICESIZE){
+					dieImage1.setDieValue(1);
+					instructionLabel.setText("Click on a numbered tile to flip it");
+					repaint();
+				}
 				//System.out.println("tile selected was " + tileSelected);
 			} catch (NoninvertibleTransformException e1) {
 				// TODO Auto-generated catch block
