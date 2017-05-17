@@ -12,6 +12,9 @@ import java.awt.Insets;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.border.EmptyBorder;
 
 import model.GameEngine;
@@ -21,7 +24,7 @@ public class GUI extends JFrame{
 	
 	JLabel tiles[];
 	public static final int NUM_TILES = 9;
-	
+	JMenuBar menu = new GameMenuBar();
 	
 	public GUI(String s){
 		super(s);
@@ -58,6 +61,7 @@ public class GUI extends JFrame{
 		gameBoxConstraints.anchor = GridBagConstraints.PAGE_START;
 		contentPane.add(title,titleConstraints);
 		contentPane.add(gameBoxPanel,gameBoxConstraints);
+		this.setJMenuBar(menu);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
