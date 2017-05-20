@@ -28,10 +28,13 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import model.DiceResult;
+import model.GameEngine;
+
 
 
 @SuppressWarnings("serial")
-public class GameBoxPanel extends JPanel{
+public class GameBoxPanel extends JPanel implements Display{
 	
 	private BufferedImage image;
 	private BufferedImage startTileImages[];
@@ -48,8 +51,11 @@ public class GameBoxPanel extends JPanel{
 	private JLabel instructionLabel;
 	private int leftOffset = 0;
 	private int die1_xCor, die2_xCor, die_yCor = 150;
+	private String[] instructions = { "Click on dice to roll", "Click on a numbered tile to flip it"};
+	private GameEngine gameEngine;
 	
-	public GameBoxPanel() {
+	public GameBoxPanel(GameEngine gameEngine) {
+		this.gameEngine = gameEngine;
 		tilesState = new boolean[GUI.NUM_TILES];
 		Arrays.fill(tilesState, false);
 		dieImage1 = new DieView(2);
@@ -84,7 +90,7 @@ public class GameBoxPanel extends JPanel{
 		//this.setSize(new Dimension(580,340));
 		this.addMouseListener(new TileListener());
 		this.setBackground(Color.cyan);
-		instructionLabel = new JLabel("Click on dice to roll");
+		instructionLabel = new JLabel(instructions[0]);
 		instructionLabel.setForeground(Color.WHITE);
 		instructionLabel.setFont(new Font("SansSerif",Font.BOLD,18));
 		
@@ -160,13 +166,6 @@ public class GameBoxPanel extends JPanel{
 		//scaleTransform.transform(new Point(250,60),dicePanelDimensions);
 		//test.setSize(dicePanelDimensions.x,dicePanelDimensions.y);
 		
-		
-		
-	}
-	
-	public void flipTiles(int tileNum){
-		tilesState[tileNum - 1] = true;
-		this.repaint();
 	}
 	
 	@Override
@@ -181,6 +180,46 @@ public class GameBoxPanel extends JPanel{
 	
 	public Dimension getMinimumSize() {
 		return getPreferredSize();
+	}
+	
+	@Override
+	public void updateDiceIntermediate(DiceResult dice) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateDiceFinal(DiceResult dice) {
+		dieImage1.setDieValue(dice.getDie1());
+		dieImage2.setDieValue(dice.getDie2());
+		instructionLabel.setText(instructions[1]);
+		repaint();
+		
+	}
+
+	@Override
+	public void flipTile(int tileNum) {
+			instructionLabel.setText(instructions[0]);
+			tilesState[tileNum - 1] = true;
+			this.repaint();
+	}
+
+	@Override
+	public void gameLostUpdate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void gameWonUpdate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void newGameUpdate() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	private class TileListener extends MouseAdapter{
@@ -201,16 +240,15 @@ public class GameBoxPanel extends JPanel{
 				if(y > EDGE_WIDTH && y < TILE_HEIGHT + EDGE_WIDTH){
 					for(int i = 0; i < GUI.NUM_TILES; i++){
 						if(x > 20 + i * TILE_WIDTH && x <  20 + (i+1) * TILE_WIDTH){
-							flipTiles(i+1);
+							gameEngine.flipTile(i+1);
 							break;
 						}
 					}
 				}
 				else if(y >= die_yCor && y<= die_yCor + DieView.DICESIZE  
 						&& x >= die1_xCor && x <= die2_xCor + DieView.DICESIZE){
-					dieImage1.setDieValue(1);
-					instructionLabel.setText("Click on a numbered tile to flip it");
-					repaint();
+					gameEngine.rollDice();
+
 				}
 				//System.out.println("tile selected was " + tileSelected);
 			} catch (NoninvertibleTransformException e1) {
@@ -220,6 +258,8 @@ public class GameBoxPanel extends JPanel{
 
 		}
 	}
+
+
 	
 	
 }

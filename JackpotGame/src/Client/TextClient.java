@@ -3,6 +3,8 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import model.GameEngine;
+import model.GameEngine.FlipTileOutcome;
+import model.GameEngine.GameState;
 import view.Display;
 import view.TextDisplay;
 
@@ -22,26 +24,32 @@ public class TextClient {
 		Scanner sc = new Scanner(System.in);
 		display.newGameUpdate();
 		while(playerContinue){
-			int tilesFlipped = 0;
+			//loop to repeatedly have player roll dice, followed by selecting a tile, until game is over.
 			do{
 				int tileSelection;
-				//if dice roll has no corresponding valid moves and game is over.
-				if(gameEngine.rollDice() == false)
+				gameEngine.rollDice();
+				if(gameEngine.getGameState() == GameState.GAME_LOST)
 					break;
-				boolean tileSelected = false;
-				while(!tileSelected){
+				//initialize flipTileOutcome to something other than SUCCESS
+				FlipTileOutcome flipTileOutcome = FlipTileOutcome.INVALID_MOVE;
+				//ask player to select a tile until they provide a valid one.
+				while(flipTileOutcome != FlipTileOutcome.SUCCESS){
 					System.out.print("Select a tile: ");
 					try{
 						tileSelection = sc.nextInt();
-						tileSelected = gameEngine.flipTile(tileSelection);
+						flipTileOutcome = gameEngine.flipTile(tileSelection);
+						if(flipTileOutcome == FlipTileOutcome.TILE_ALREADY_FLIPPED)
+							System.out.println("Tile has already been flipped");
+						else if(flipTileOutcome == FlipTileOutcome.INVALID_MOVE)
+							System.out.println("Invalid move: must select tile number that " + 
+									"matches either die or the combined total of the dice");
 					}
 					catch(IllegalArgumentException | InputMismatchException e){
+						System.out.println("Must enter a tile number between 1 and 9");
 						sc.nextLine();
 					}
 				}
-				//add gameState variable in model instead.
-			} while(++tilesFlipped < GameEngine.NUM_TILES); //while game has not been won yet.
-			
+			} while(gameEngine.getGameState() != GameState.GAME_WON); 			
 			System.out.print("Play Again (y/n)?");
 			sc.nextLine();
 			String input = sc.nextLine();

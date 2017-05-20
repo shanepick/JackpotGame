@@ -2,7 +2,6 @@ package view;
 
 import model.DiceResult;
 import model.GameEngine;
-import model.GameEngine.InvalidTileStatus;
 
 public interface Display {
 	
@@ -12,7 +11,7 @@ public interface Display {
 	
 	public void flipTile(int tileNum);
 	
-	public void invalidTileUpdate(GameEngine.InvalidTileStatus status);
+//	public void invalidTileUpdate(GameEngine.InvalidTileStatus status);
 	
 	public void gameLostUpdate();
 	

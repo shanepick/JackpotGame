@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import model.DiceResult;
-import model.GameEngine.InvalidTileStatus;
 
 public class TextDisplay implements Display{
 	
@@ -15,7 +14,6 @@ public class TextDisplay implements Display{
 	
 	public TextDisplay(){
 		Tiles = Arrays.copyOf(startTiles,startTiles.length);
-		scan = new Scanner(System.in); 
 	}
 	
 	@Override
@@ -37,7 +35,7 @@ public class TextDisplay implements Display{
         System.out.println();
 	}
 
-	@Override
+	/*
 	public void invalidTileUpdate(InvalidTileStatus status) {
 		switch(status){
 		case TILE_ALREADY_FLIPPED:
@@ -48,7 +46,7 @@ public class TextDisplay implements Display{
 					"matches either die or the combined total of the dice");
 			break;
 		}
-	}
+	}*/
 
 	@Override
 	public void gameLostUpdate() {

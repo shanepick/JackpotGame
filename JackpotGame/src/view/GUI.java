@@ -22,12 +22,15 @@ import model.GameEngine;
 @SuppressWarnings("serial")
 public class GUI extends JFrame{
 	
-	JLabel tiles[];
-	public static final int NUM_TILES = 9;
-	JMenuBar menu = new GameMenuBar();
 	
-	public GUI(String s){
-		super(s);
+	public static final int NUM_TILES = 9;
+	private JMenuBar menu = new GameMenuBar();
+	private GameBoxPanel gameBoxPanel;
+	private GameEngine gameEngine;
+	
+	public GUI(GameEngine gameEngine){
+		super("Jackpot Game");
+		this.gameEngine = gameEngine;
 		this.setSize(700, 500);
 		this.setLocationRelativeTo(null);
 		JLabel title = new JLabel("JACKPOT GAME");
@@ -37,9 +40,8 @@ public class GUI extends JFrame{
 		//title.setAlignmentX(CENTER_ALIGNMENT);
 		title.setBorder(new EmptyBorder(30,30,30,30));
 		
-		GameBoxPanel gameBoxPanel = new GameBoxPanel();
+		gameBoxPanel = new GameBoxPanel(gameEngine);
 		//gameBoxPanel.setAlignmentX(CENTER_ALIGNMENT);
-		tiles = new TileView[GameEngine.NUM_TILES];
 		Container contentPane = this.getContentPane();
 		//contentPane.setLayout(new BoxLayout(contentPane,BoxLayout.Y_AXIS));
 		contentPane.setLayout(new GridBagLayout());
@@ -66,8 +68,8 @@ public class GUI extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	public static void main(String Args[]){
-		new GUI("Jackpot Game");
+	public GameBoxPanel getGameBoxPanel(){
+		return gameBoxPanel;
 	}
 }
 
