@@ -25,8 +25,13 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 
 import model.DiceResult;
 import model.GameEngine;
@@ -48,13 +53,19 @@ public class GameBoxPanel extends JPanel implements Display{
 	private DieView dieImage1, dieImage2;
 	private GridBagConstraints c = new GridBagConstraints();
 	private GridBagConstraints d = new GridBagConstraints();
+	private JPanel instructionPanel;
 	private JLabel instructionLabel;
+	private JLabel instructionLabel2;
 	private int leftOffset = 0;
 	private int die1_xCor, die2_xCor, die_yCor = 150;
-	private String[] instructions = { "Click on dice to roll", "Click on a numbered tile to flip it"};
+	private String[] instructions = { "Click on dice to roll", "Click on a numbered tile to flip it",
+			"You Win!", "You Lose.", "No More Moves Possible"};
+	private JButton newGameButton;
 	private GameEngine gameEngine;
 	
+	
 	public GameBoxPanel(GameEngine gameEngine) {
+		
 		this.gameEngine = gameEngine;
 		tilesState = new boolean[GUI.NUM_TILES];
 		Arrays.fill(tilesState, false);
@@ -89,10 +100,31 @@ public class GameBoxPanel extends JPanel implements Display{
 	    }
 		//this.setSize(new Dimension(580,340));
 		this.addMouseListener(new TileListener());
-		this.setBackground(Color.cyan);
+		//this.setBackground(Color.cyan);
 		instructionLabel = new JLabel(instructions[0]);
+		//instructionLabel.setVerticalAlignment(JLabel.NORTH);
+		//instructionLabel.setBackground(Color.MAGENTA);
+		//instructionLabel.setOpaque(true);
 		instructionLabel.setForeground(Color.WHITE);
 		instructionLabel.setFont(new Font("SansSerif",Font.BOLD,18));
+		instructionLabel.setAlignmentX(CENTER_ALIGNMENT);
+		instructionLabel2 = new JLabel("");
+		instructionLabel2.setForeground(Color.WHITE);
+		instructionLabel2.setFont(new Font("SansSerif",Font.BOLD,18));
+		instructionLabel2.setAlignmentX(CENTER_ALIGNMENT);
+		newGameButton = new JButton("New Game");
+		newGameButton.setAlignmentX(CENTER_ALIGNMENT);
+		newGameButton.setVisible(false);
+		
+		//instructionLabel2 = newJLabel("")
+		
+		instructionPanel = new JPanel();
+		instructionPanel.setBackground(Color.YELLOW);
+		instructionPanel.setOpaque(false);
+		instructionPanel.setLayout(new BoxLayout(instructionPanel,BoxLayout.Y_AXIS));
+		instructionPanel.add(instructionLabel);
+		instructionPanel.add(instructionLabel2);
+		instructionPanel.add(newGameButton);
 		
 		
 		this.setLayout(new GridBagLayout());
@@ -101,20 +133,20 @@ public class GameBoxPanel extends JPanel implements Display{
 		//test.setBackground(Color.BLACK);
 		//test.setPreferredSize(new Dimension(200,100));
 		
-		c.weighty = 0.3;
+		c.weighty = 0.8;
 		//c.anchor = GridBagConstraints.PAGE_END;
 		//c.insets = new Insets(200,30,30,30);
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 0;
 		c.gridy = 0;
 		
-		d.weighty = 0.6;
+		d.weighty = 0.2;
 		d.fill = GridBagConstraints.VERTICAL;
 		d.gridx = 0;
 		d.gridy = 1;
 		//this.add(test,c);
 		this.add(new JLabel(""),c);
-		this.add(instructionLabel,d);
+		this.add(instructionPanel,d);
 		
 	}
 	
@@ -206,20 +238,23 @@ public class GameBoxPanel extends JPanel implements Display{
 
 	@Override
 	public void gameLostUpdate() {
-		// TODO Auto-generated method stub
-		
+		instructionLabel.setText(instructions[3]);
+		instructionLabel2.setText(instructions[4]);
+		newGameButton.setVisible(true);
+		this.repaint();
 	}
 
 	@Override
 	public void gameWonUpdate() {
-		// TODO Auto-generated method stub
+		instructionLabel.setText(instructions[2]);
+		newGameButton.setVisible(true);
+		this.repaint();
 		
 	}
 
 	@Override
 	public void newGameUpdate() {
-		// TODO Auto-generated method stub
-		
+
 	}
 	
 	private class TileListener extends MouseAdapter{
