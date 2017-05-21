@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ButtonGroup;
@@ -9,11 +11,18 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 
+import model.GameEngine;
+
 public class GameMenuBar extends JMenuBar{
 
+	private GameEngine gameEngine;
 	private JMenu gameMenu, viewMenu, colorMenu;
+	private JMenuItem newGame, exitGame, blue, green, red, black;
+	private MenuListener menuListener;
 	
-	public GameMenuBar(){
+	public GameMenuBar(GameEngine gameEngine){
+		this.gameEngine = gameEngine;
+		menuListener = new MenuListener();
 		initializeGameMenu();
 		initializeViewMenu();
 		this.add(gameMenu);
@@ -25,9 +34,11 @@ public class GameMenuBar extends JMenuBar{
 	private void initializeGameMenu(){
 		gameMenu = new JMenu("Game");
 		gameMenu.setMnemonic(KeyEvent.VK_G);
-		JMenuItem newGame= new JMenuItem("New game",KeyEvent.VK_N);
+		newGame= new JMenuItem("New game",KeyEvent.VK_N);
+		newGame.addActionListener(menuListener);
 		gameMenu.add(newGame);
-		JMenuItem exitGame = new JMenuItem("Exit game",KeyEvent.VK_X);
+		exitGame = new JMenuItem("Exit game",KeyEvent.VK_X);
+		exitGame.addActionListener(menuListener);
 		gameMenu.add(exitGame);
 	}
 	
@@ -58,5 +69,19 @@ public class GameMenuBar extends JMenuBar{
 		showStats.setMnemonic(KeyEvent.VK_S);
 		viewMenu.add(showStats);
 		viewMenu.add(colorMenu);
+	}
+	
+	public class MenuListener implements ActionListener {
+		
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			if(event.getActionCommand().equals(newGame.getText())){
+				gameEngine.newGame();
+			}
+			else if(event.getActionCommand().equals(exitGame.getText())){
+				System.exit(0);
+			}
+		}
+
 	}
 }

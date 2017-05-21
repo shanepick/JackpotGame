@@ -13,6 +13,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -69,8 +71,8 @@ public class GameBoxPanel extends JPanel implements Display{
 		this.gameEngine = gameEngine;
 		tilesState = new boolean[GUI.NUM_TILES];
 		Arrays.fill(tilesState, false);
-		dieImage1 = new DieView(2);
-		dieImage2 = new DieView(5);
+		dieImage1 = new DieView(1);
+		dieImage2 = new DieView(1);
 		try {                
 			image = ImageIO.read(new File("images/board.png"));
 	    } catch (IOException ex) {
@@ -108,13 +110,20 @@ public class GameBoxPanel extends JPanel implements Display{
 		instructionLabel.setForeground(Color.WHITE);
 		instructionLabel.setFont(new Font("SansSerif",Font.BOLD,18));
 		instructionLabel.setAlignmentX(CENTER_ALIGNMENT);
-		instructionLabel2 = new JLabel("");
+		instructionLabel2 = new JLabel(instructions[4]);
 		instructionLabel2.setForeground(Color.WHITE);
 		instructionLabel2.setFont(new Font("SansSerif",Font.BOLD,18));
 		instructionLabel2.setAlignmentX(CENTER_ALIGNMENT);
+		instructionLabel2.setVisible(false);
 		newGameButton = new JButton("New Game");
 		newGameButton.setAlignmentX(CENTER_ALIGNMENT);
 		newGameButton.setVisible(false);
+		newGameButton.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				gameEngine.newGame();
+			}
+		});
 		
 		//instructionLabel2 = newJLabel("")
 		
@@ -133,7 +142,7 @@ public class GameBoxPanel extends JPanel implements Display{
 		//test.setBackground(Color.BLACK);
 		//test.setPreferredSize(new Dimension(200,100));
 		
-		c.weighty = 0.8;
+		c.weighty = 0.7;
 		//c.anchor = GridBagConstraints.PAGE_END;
 		//c.insets = new Insets(200,30,30,30);
 		c.fill = GridBagConstraints.VERTICAL;
@@ -231,15 +240,15 @@ public class GameBoxPanel extends JPanel implements Display{
 
 	@Override
 	public void flipTile(int tileNum) {
-			instructionLabel.setText(instructions[0]);
-			tilesState[tileNum - 1] = true;
-			this.repaint();
+		instructionLabel.setText(instructions[0]);
+		tilesState[tileNum - 1] = true;
+		this.repaint();
 	}
 
 	@Override
 	public void gameLostUpdate() {
 		instructionLabel.setText(instructions[3]);
-		instructionLabel2.setText(instructions[4]);
+		instructionLabel2.setVisible(true);
 		newGameButton.setVisible(true);
 		this.repaint();
 	}
@@ -254,7 +263,11 @@ public class GameBoxPanel extends JPanel implements Display{
 
 	@Override
 	public void newGameUpdate() {
-
+		Arrays.fill(tilesState, false);
+		instructionLabel.setText(instructions[0]);
+		instructionLabel2.setVisible(false);
+		newGameButton.setVisible(false);
+		this.repaint();
 	}
 	
 	private class TileListener extends MouseAdapter{

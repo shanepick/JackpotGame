@@ -24,13 +24,14 @@ public class GUI extends JFrame{
 	
 	
 	public static final int NUM_TILES = 9;
-	private JMenuBar menu = new GameMenuBar();
 	private GameBoxPanel gameBoxPanel;
 	private GameEngine gameEngine;
+	private JMenuBar menu; 
 	
 	public GUI(GameEngine gameEngine){
 		super("Jackpot Game");
 		this.gameEngine = gameEngine;
+		menu = new GameMenuBar(gameEngine);
 		this.setSize(700, 500);
 		this.setLocationRelativeTo(null);
 		JLabel title = new JLabel("JACKPOT GAME");
