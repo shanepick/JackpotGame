@@ -16,7 +16,7 @@ public class DieView extends BufferedImage{
 		super(DICESIZE, DICESIZE, TYPE_INT_ARGB);
 		g2d = (Graphics2D) createGraphics();
 		g2d.setColor(Color.black);
-        g2d.drawRect(0,0, DICESIZE, DICESIZE);
+        g2d.fillRect(0,0, DICESIZE, DICESIZE);
         setDieValue(dieValue);
 		setDieValue(dieValue);
 	}
@@ -28,7 +28,7 @@ public class DieView extends BufferedImage{
 			throw new IllegalArgumentException("invalid dieValue");
 		
 		g2d.setColor(Color.WHITE);
-		g2d.fillRect(0 + 1, 0 + 1, DICESIZE-1, DICESIZE-1);
+		g2d.fillRect(0 + 1, 0 + 1, DICESIZE-2, DICESIZE-2);
 		g2d.setColor(Color.black);
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		if(dieValue==1){

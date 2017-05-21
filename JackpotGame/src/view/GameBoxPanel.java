@@ -43,7 +43,7 @@ import model.GameEngine;
 @SuppressWarnings("serial")
 public class GameBoxPanel extends JPanel implements Display{
 	
-	private BufferedImage image;
+	private BufferedImage gameBoximage;
 	private BufferedImage startTileImages[];
 	private BufferedImage flippedTileImages[];
 	public static final int TILE_WIDTH = 60;
@@ -56,12 +56,13 @@ public class GameBoxPanel extends JPanel implements Display{
 	private GridBagConstraints c = new GridBagConstraints();
 	private GridBagConstraints d = new GridBagConstraints();
 	private JPanel instructionPanel;
-	private JLabel instructionLabel;
-	private JLabel instructionLabel2;
+	private JLabel instructionLabel, instructionLabel2;
 	private int leftOffset = 0;
 	private int die1_xCor, die2_xCor, die_yCor = 150;
 	private String[] instructions = { "Click on dice to roll", "Click on a numbered tile to flip it",
 			"You Win!", "You Lose.", "No More Moves Possible"};
+	public enum FeltColor { BLUE, GREEN, RED, BLACK };
+	private FeltColor colorChoice;
 	private JButton newGameButton;
 	private GameEngine gameEngine;
 	
@@ -70,11 +71,12 @@ public class GameBoxPanel extends JPanel implements Display{
 		
 		this.gameEngine = gameEngine;
 		tilesState = new boolean[GUI.NUM_TILES];
+		colorChoice = FeltColor.BLUE;
 		Arrays.fill(tilesState, false);
 		dieImage1 = new DieView(1);
 		dieImage2 = new DieView(1);
 		try {                
-			image = ImageIO.read(new File("images/board.png"));
+			gameBoximage = ImageIO.read(new File("images/board.png"));
 	    } catch (IOException ex) {
 	        System.err.println("An error occurred: GameBox image file could not be opened.");
 	        System.exit(1);
@@ -178,11 +180,27 @@ public class GameBoxPanel extends JPanel implements Display{
 		scaleFactor = Math.min( (width / 698.0), (height/349.0));
 		System.out.println("scale factor is " + scaleFactor);
 		g2d.scale(scaleFactor,scaleFactor);
-		//TODO crate AffineTransform once in constructor instead of every time.
 		scaleTransform = new AffineTransform();
 		scaleTransform.scale(scaleFactor, scaleFactor);
 		g2d.setTransform(scaleTransform); 
-		g2d.drawImage(image,0,0,this);
+		g2d.drawImage(gameBoximage,0,0,this);
+		switch(colorChoice){
+		case GREEN: 
+			g2d.setColor(Color.getHSBColor(0.35f, 0.82f, 0.45f));
+			g2d.fillRect(20, 97, 540, 223);
+			break;
+		case RED:
+			g2d.setColor(Color.getHSBColor(0.036f, 0.90f, 0.51f));
+			g2d.fillRect(20, 97, 540, 223);
+			break;
+		case BLACK:
+			g2d.setColor(Color.getHSBColor(0.65f, 0.06f, 0.17f));
+			g2d.fillRect(20, 97, 540, 223);
+			break;
+		default:
+			break;
+		}
+
 		die1_xCor = (580/2) - DieView.DICESIZE - (DICE_GAP/ 2);
 		System.out.println(die1_xCor);
 		die2_xCor = die1_xCor + DieView.DICESIZE + DICE_GAP;
@@ -207,6 +225,11 @@ public class GameBoxPanel extends JPanel implements Display{
 		//scaleTransform.transform(new Point(250,60),dicePanelDimensions);
 		//test.setSize(dicePanelDimensions.x,dicePanelDimensions.y);
 		
+	}
+	
+	public void setColorChoice(FeltColor color){
+		colorChoice = color;
+		this.repaint();
 	}
 	
 	@Override

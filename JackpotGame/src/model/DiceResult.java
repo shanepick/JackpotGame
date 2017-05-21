@@ -2,9 +2,6 @@ package model;
 
 public class DiceResult {
 	
-	/**
-	 * 
-	 */
 	private int die1Value;
 	private int die2Value;
 	private int numOfFaces;
@@ -32,7 +29,7 @@ public class DiceResult {
 	}
 	
 	public int getTotal() {
-		return die1Value+die2Value;
+		return die1Value + die2Value;
 	}
 	
 	public String toString(){

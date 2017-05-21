@@ -12,16 +12,19 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 
 import model.GameEngine;
+import view.GameBoxPanel.FeltColor;
 
 public class GameMenuBar extends JMenuBar{
 
 	private GameEngine gameEngine;
+	private GUI gui;
 	private JMenu gameMenu, viewMenu, colorMenu;
 	private JMenuItem newGame, exitGame, blue, green, red, black;
 	private MenuListener menuListener;
 	
-	public GameMenuBar(GameEngine gameEngine){
+	public GameMenuBar(GameEngine gameEngine, GUI gui){
 		this.gameEngine = gameEngine;
+		this.gui = gui;
 		menuListener = new MenuListener();
 		initializeGameMenu();
 		initializeViewMenu();
@@ -49,12 +52,16 @@ public class GameMenuBar extends JMenuBar{
 		colorMenu.setMnemonic(KeyEvent.VK_F);
 		JMenuItem blue = new JRadioButtonMenuItem("Blue");
 		blue.setMnemonic(KeyEvent.VK_B);
+		blue.addActionListener(menuListener);
 		JMenuItem green = new JRadioButtonMenuItem("Green");
 		green.setMnemonic(KeyEvent.VK_G);
+		green.addActionListener(menuListener);
 		JMenuItem red = new JRadioButtonMenuItem("Red");
 		red.setMnemonic(KeyEvent.VK_R);
+		red.addActionListener(menuListener);
 		JMenuItem black = new JRadioButtonMenuItem("Black");
 		black.setMnemonic(KeyEvent.VK_L);
+		black.addActionListener(menuListener);
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(blue);
 		bg.add(green);
@@ -80,6 +87,18 @@ public class GameMenuBar extends JMenuBar{
 			}
 			else if(event.getActionCommand().equals(exitGame.getText())){
 				System.exit(0);
+			}
+			else if(event.getActionCommand().equals("Blue")){
+				gui.getGameBoxPanel().setColorChoice(FeltColor.BLUE);
+			}
+			else if(event.getActionCommand().equals("Green")){
+				gui.getGameBoxPanel().setColorChoice(FeltColor.GREEN);
+			}
+			else if(event.getActionCommand().equals("Red")){
+				gui.getGameBoxPanel().setColorChoice(FeltColor.RED);
+			}
+			else if(event.getActionCommand().equals("Black")){
+				gui.getGameBoxPanel().setColorChoice(FeltColor.BLACK);
 			}
 		}
 
