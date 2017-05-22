@@ -14,12 +14,14 @@ import javax.swing.JRadioButtonMenuItem;
 import model.GameEngine;
 import view.GameBoxPanel.FeltColor;
 
+@SuppressWarnings("serial")
 public class GameMenuBar extends JMenuBar{
 
 	private GameEngine gameEngine;
 	private GUI gui;
 	private JMenu gameMenu, viewMenu, colorMenu;
-	private JMenuItem newGame, exitGame, blue, green, red, black;
+	private JMenuItem newGame, exitGame, blue, green, red, black; 
+	private JCheckBoxMenuItem showStats;
 	private MenuListener menuListener;
 	
 	public GameMenuBar(GameEngine gameEngine, GUI gui){
@@ -50,16 +52,16 @@ public class GameMenuBar extends JMenuBar{
 		viewMenu.setMnemonic(KeyEvent.VK_V);
 		colorMenu = new JMenu("Select Felt Color");
 		colorMenu.setMnemonic(KeyEvent.VK_F);
-		JMenuItem blue = new JRadioButtonMenuItem("Blue");
+		blue = new JRadioButtonMenuItem("Blue");
 		blue.setMnemonic(KeyEvent.VK_B);
 		blue.addActionListener(menuListener);
-		JMenuItem green = new JRadioButtonMenuItem("Green");
+		green = new JRadioButtonMenuItem("Green");
 		green.setMnemonic(KeyEvent.VK_G);
 		green.addActionListener(menuListener);
-		JMenuItem red = new JRadioButtonMenuItem("Red");
+		red = new JRadioButtonMenuItem("Red");
 		red.setMnemonic(KeyEvent.VK_R);
 		red.addActionListener(menuListener);
-		JMenuItem black = new JRadioButtonMenuItem("Black");
+		black = new JRadioButtonMenuItem("Black");
 		black.setMnemonic(KeyEvent.VK_L);
 		black.addActionListener(menuListener);
 		ButtonGroup bg = new ButtonGroup();
@@ -72,8 +74,10 @@ public class GameMenuBar extends JMenuBar{
 		colorMenu.add(green);
 		colorMenu.add(red);
 		colorMenu.add(black);
-		JMenuItem showStats = new JCheckBoxMenuItem("Show Win/Loss Statistics");
+		showStats = new JCheckBoxMenuItem("Show Win/Loss Statistics");
 		showStats.setMnemonic(KeyEvent.VK_S);
+		showStats.addActionListener(menuListener);
+		showStats.setActionCommand("Stats");
 		viewMenu.add(showStats);
 		viewMenu.add(colorMenu);
 	}
@@ -99,6 +103,13 @@ public class GameMenuBar extends JMenuBar{
 			}
 			else if(event.getActionCommand().equals("Black")){
 				gui.getGameBoxPanel().setColorChoice(FeltColor.BLACK);
+			}
+			else if(event.getActionCommand().equals("Stats")){
+				if(showStats.getState())
+					gui.getStatsPanel().showStats();
+				else
+					gui.getStatsPanel().hideStats();
+					
 			}
 		}
 

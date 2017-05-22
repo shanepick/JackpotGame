@@ -8,7 +8,7 @@ public class GuiClient {
 	private void runGame(){
 		GameEngine gameEngine = new GameEngine();
 		GUI gui = new GUI(gameEngine);
-		gameEngine.addDisplay(gui.getGameBoxPanel());
+		gameEngine.addDisplay(gui);
 	}
 	
 	public static void main(String Args[]){

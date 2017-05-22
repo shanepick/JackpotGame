@@ -41,7 +41,7 @@ import model.GameEngine;
 
 
 @SuppressWarnings("serial")
-public class GameBoxPanel extends JPanel implements Display{
+public class GameBoxPanel extends JPanel{
 	
 	private BufferedImage gameBoximage;
 	private BufferedImage startTileImages[];
@@ -232,27 +232,23 @@ public class GameBoxPanel extends JPanel implements Display{
 		this.repaint();
 	}
 	
+
 	@Override
-	public Dimension getPreferredSize() {
-		//Dimension test = super.getPreferredSize();
-		//System.out.print("PreferredSize is" + test);
-		//return test;
+	public Dimension getMaximumSize() {
 		Container parent = this.getParent();
+		System.out.println("getmaximum: parent hieght = " + parent.getWidth());
 		int width = parent.getWidth();
 	    return new Dimension(width, (int) (width/2.0) );
 	}
 	
-	public Dimension getMinimumSize() {
-		return getPreferredSize();
-	}
-	
 	@Override
-	public void updateDiceIntermediate(DiceResult dice) {
-		// TODO Auto-generated method stub
-		
+	public Dimension getPreferredSize() {
+		Container parent = this.getParent();
+		System.out.println("getpreferred: parent hieght = " + parent.getWidth());
+		int width = parent.getWidth();
+	    return new Dimension(width, (int) (width/2.0) );
 	}
 
-	@Override
 	public void updateDiceFinal(DiceResult dice) {
 		dieImage1.setDieValue(dice.getDie1());
 		dieImage2.setDieValue(dice.getDie2());
@@ -261,14 +257,13 @@ public class GameBoxPanel extends JPanel implements Display{
 		
 	}
 
-	@Override
+
 	public void flipTile(int tileNum) {
 		instructionLabel.setText(instructions[0]);
 		tilesState[tileNum - 1] = true;
 		this.repaint();
 	}
 
-	@Override
 	public void gameLostUpdate() {
 		instructionLabel.setText(instructions[3]);
 		instructionLabel2.setVisible(true);
@@ -276,7 +271,6 @@ public class GameBoxPanel extends JPanel implements Display{
 		this.repaint();
 	}
 
-	@Override
 	public void gameWonUpdate() {
 		instructionLabel.setText(instructions[2]);
 		newGameButton.setVisible(true);
@@ -284,7 +278,6 @@ public class GameBoxPanel extends JPanel implements Display{
 		
 	}
 
-	@Override
 	public void newGameUpdate() {
 		Arrays.fill(tilesState, false);
 		instructionLabel.setText(instructions[0]);

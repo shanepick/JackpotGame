@@ -113,5 +113,13 @@ public class GameEngine {
 	public GameState getGameState(){
 		return gameState;
 	}
+
+	public int getNumWins() {
+		return numWins;
+	}
+
+	public int getNumLosses() {
+		return numLosses;
+	}
 	
 }
