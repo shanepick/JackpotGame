@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -89,7 +90,7 @@ public class GameBoxPanel extends JPanel{
 			}
 			flippedTileImages[0] = ImageIO.read(new File("images/tileDot.png"));
 			//TODO change filename
-			flippedTileImages[1] = ImageIO.read(new File("images/test.png"));
+			flippedTileImages[1] = ImageIO.read(new File("images/tileJ.png"));
 			flippedTileImages[2] = ImageIO.read(new File("images/tileA.png"));
 			flippedTileImages[3] = ImageIO.read(new File("images/tileC.png"));
 			flippedTileImages[4] = ImageIO.read(new File("images/tileK.png"));
@@ -133,8 +134,12 @@ public class GameBoxPanel extends JPanel{
 		instructionPanel.setBackground(Color.YELLOW);
 		instructionPanel.setOpaque(false);
 		instructionPanel.setLayout(new BoxLayout(instructionPanel,BoxLayout.Y_AXIS));
+		Dimension dim2 = new Dimension(0,20);
+		instructionPanel.add(new Box.Filler(dim2,dim2,dim2));
 		instructionPanel.add(instructionLabel);
 		instructionPanel.add(instructionLabel2);
+		Dimension dim = new Dimension(0,5);
+		instructionPanel.add(new Box.Filler(dim, dim, dim));
 		instructionPanel.add(newGameButton);
 		
 		
@@ -151,11 +156,12 @@ public class GameBoxPanel extends JPanel{
 		c.gridx = 0;
 		c.gridy = 0;
 		
-		d.weighty = 0.2;
+		d.weighty = 0.20;
 		d.fill = GridBagConstraints.VERTICAL;
 		d.gridx = 0;
 		d.gridy = 1;
 		//this.add(test,c);
+
 		this.add(new JLabel(""),c);
 		this.add(instructionPanel,d);
 		
@@ -164,26 +170,29 @@ public class GameBoxPanel extends JPanel{
 	@Override
 	protected void paintComponent(Graphics g) {
 
+		System.out.println("print paintComponent start");
 		//perhaps change to paint everything to buffered image first. 
-		int height, width;
-		double scaleFactor;
-		height = getHeight();
-		width = getWidth();
 		//Graphics2D g2d = (Graphics2D) g;
+		int width = getParent().getWidth();
+		int height = getHeight();
+		
 		BufferedImage bufferedImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) bufferedImage.createGraphics();
 		//super.paintComponent(g2d);
-
+		
 		//g2d.drawImage(image,60,0,this);
 		System.out.println("width is " +width);
 		System.out.println("height is: " +height);
-		scaleFactor = Math.min( (width / 698.0), (height/349.0));
+		double scaleFactor = computeScaleFactor(width, height);
 		System.out.println("scale factor is " + scaleFactor);
 		g2d.scale(scaleFactor,scaleFactor);
+		//instructionLabel.setFont(new Font("SansSerif",Font.BOLD,(int) scaleFactor * 18));
 		scaleTransform = new AffineTransform();
 		scaleTransform.scale(scaleFactor, scaleFactor);
-		g2d.setTransform(scaleTransform); 
+		g2d.setTransform(scaleTransform);
 		g2d.drawImage(gameBoximage,0,0,this);
+		//The felt color is blue by default on the loaded image. 
+		//For other colors it must be drawn over.
 		switch(colorChoice){
 		case GREEN: 
 			g2d.setColor(Color.getHSBColor(0.35f, 0.82f, 0.45f));
@@ -217,14 +226,14 @@ public class GameBoxPanel extends JPanel{
 		//c.insets = new Insets( (int) scaleFactor * 200, (int) scaleFactor * 30, (int) scaleFactor * 30, (int) scaleFactor * 30);
 		//revalidate();
 		super.paintComponent(g);
-		leftOffset = (int) ((width - (scaleFactor * 580))/2 );
+		leftOffset = (int) Math.floor(((width - (scaleFactor * 580))/2 ));
 		System.out.println("leftOffset is" + leftOffset);
 		g.drawImage(bufferedImage,leftOffset,0,this);
 		
 		//Point dicePanelDimensions = new Point();
 		//scaleTransform.transform(new Point(250,60),dicePanelDimensions);
 		//test.setSize(dicePanelDimensions.x,dicePanelDimensions.y);
-		
+		System.out.println("print paintComponent end");
 	}
 	
 	public void setColorChoice(FeltColor color){
@@ -284,6 +293,20 @@ public class GameBoxPanel extends JPanel{
 		instructionLabel2.setVisible(false);
 		newGameButton.setVisible(false);
 		this.repaint();
+	}
+	
+	public void scaleText() {
+		System.out.println("scale text");
+		double scaleFactor = computeScaleFactor(getParent().getWidth(), getHeight());
+		int textSize = (int) Math.ceil(Math.max(8, 18 * scaleFactor));
+		int buttonTextSize = (int) Math.ceil(Math.max(6, 14 * scaleFactor));
+		instructionLabel.setFont(new Font("SansSerif",Font.BOLD,textSize));
+		instructionLabel2.setFont(new Font("SansSerif",Font.BOLD,textSize));
+		newGameButton.setFont(new Font("SansSerif",Font.BOLD,buttonTextSize));
+	}
+	
+	private double computeScaleFactor(int width, int height){
+		return Math.min( (width / 696.0), (height/349.0));
 	}
 	
 	private class TileListener extends MouseAdapter{

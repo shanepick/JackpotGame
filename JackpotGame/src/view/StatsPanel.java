@@ -3,6 +3,7 @@ package view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -52,6 +53,16 @@ public class StatsPanel extends JPanel{
 		numWinsLabel.setVisible(false);
 		numLossesLabel.setVisible(false);
 		percentWinLabel.setVisible(false);
+	}
+
+	public void setTextSize(double statsTextScaleFactor) {
+		if(statsTextScaleFactor > 1){
+			int textSize = (int) Math.min(statsTextScaleFactor * 14, 26);
+			Font font = new Font("SansSerif",Font.BOLD,textSize);
+			numWinsLabel.setFont(font);
+			numLossesLabel.setFont(font);
+			percentWinLabel.setFont(font);
+		}
 	}
 	
 	

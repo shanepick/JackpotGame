@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -15,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import model.DiceResult;
@@ -29,6 +33,7 @@ public class GUI extends JFrame implements Display{
 	private GameEngine gameEngine;
 	private JMenuBar menu;
 	private StatsPanel statsPanel = new StatsPanel();
+	private JPanel combinedPanel;
 	
 	public GUI(GameEngine gameEngine){
 		super("Jackpot Game");
@@ -38,15 +43,19 @@ public class GUI extends JFrame implements Display{
 		this.setLocationRelativeTo(null);
 		JLabel title = new JLabel("JACKPOT GAME");
 		//title.setBackground(Color.YELLOW);
-		//title.setOpaque(true);
+		title.setOpaque(true);
 		title.setFont(new Font("serif",0,34));
-		title.setAlignmentX(CENTER_ALIGNMENT);
+		title.setHorizontalAlignment(SwingConstants.CENTER);
+		//title.setAlignmentX(CENTER_ALIGNMENT);
 		title.setBorder(new EmptyBorder(30,30,30,30));
-		
+		//Panel to combine gameBoxPanel and statsPanel into the one panel
+		combinedPanel = new JPanel();
+		combinedPanel.setLayout(new BoxLayout(combinedPanel,BoxLayout.Y_AXIS));
 		gameBoxPanel = new GameBoxPanel(gameEngine);
 		gameBoxPanel.setAlignmentX(CENTER_ALIGNMENT);
 		Container contentPane = this.getContentPane();
-		contentPane.setLayout(new BoxLayout(contentPane,BoxLayout.Y_AXIS));
+		
+		//contentPane.setLayout(new BoxLayout(contentPane,BoxLayout.Y_AXIS));
 		//contentPane.setLayout(new GridBagLayout());
 		/*for(int i = 0; i < tiles.length; ++i){
 			tiles[i] = new TileView(i+1);
@@ -77,11 +86,15 @@ public class GUI extends JFrame implements Display{
 		/*contentPane.add(title,titleConstraints);
 		contentPane.add(gameBoxPanel,gameBoxConstraints);
 		contentPane.add(statsPanel, statsConstraints);*/
-		contentPane.add(title);
-		contentPane.add(gameBoxPanel);
-		contentPane.add(statsPanel);
+		combinedPanel.add(gameBoxPanel);
+		combinedPanel.add(statsPanel);
+		contentPane.add(title,BorderLayout.NORTH);
+		contentPane.add(combinedPanel);
+		
+		//contentPane.add(statsPanel);
 		this.setJMenuBar(menu);
 		this.setVisible(true);
+		this.addComponentListener(new resizeListener());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -127,10 +140,20 @@ public class GUI extends JFrame implements Display{
 
 	public StatsPanel getStatsPanel() {
 		return statsPanel;
+		
 	}
 	
 	/*public void showStatsPanel() {
 		
 	}*/
+	
+	public class resizeListener extends ComponentAdapter{
+	    public void componentResized(ComponentEvent e) {
+			gameBoxPanel.scaleText();
+			double statsTextScaleFactor = getWidth()/700.0;
+			System.out.println("statsTextScaleFactor " + statsTextScaleFactor);
+			statsPanel.setTextSize(statsTextScaleFactor);
+	    }
+	}
 }
 
