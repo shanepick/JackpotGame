@@ -30,7 +30,7 @@ public class TextClient {
 				gameEngine.rollDice();
 				if(gameEngine.getGameState() == GameState.GAME_LOST)
 					break;
-				//initialize flipTileOutcome to something other than SUCCESS
+				//initializing flipTileOutcome to something other than SUCCESS
 				FlipTileOutcome flipTileOutcome = FlipTileOutcome.INVALID_MOVE;
 				//ask player to select a tile until they provide a valid one.
 				while(flipTileOutcome != FlipTileOutcome.SUCCESS){
@@ -46,11 +46,13 @@ public class TextClient {
 					}
 					catch(IllegalArgumentException | InputMismatchException e){
 						System.out.println("Must enter a tile number between 1 and 9");
+						//clear buffer
 						sc.nextLine();
 					}
 				}
 			} while(gameEngine.getGameState() != GameState.GAME_WON); 			
 			System.out.print("Play Again (y/n)?");
+			//clears buffer to get rid of \n char
 			sc.nextLine();
 			String input = sc.nextLine();
 			if(input.charAt(0) != 'y')

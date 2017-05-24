@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import view.Display;
@@ -15,7 +16,7 @@ public class GameEngine {
 	private int numWins = 0;
 	private int numLosses = 0;
 	private Display display;
-	private DiceResult currentRoll = null;
+	private DiceResult currentRoll = null; //the player's last roll.
 	public enum FlipTileOutcome { TILE_ALREADY_FLIPPED, INVALID_MOVE, DICE_NOT_ROLLED, SUCCESS }
 	public enum GameState { PRE_DICE_ROLL, DURING_DICE_ROLL, POST_DICE_ROLL, GAME_WON, GAME_LOST };
 	private GameState gameState;
@@ -36,18 +37,17 @@ public class GameEngine {
 			return false;
 		gameState = GameState.DURING_DICE_ROLL;
 		int die1,die2;
-		die1=randomGenerator.nextInt(NUM_DIE_FACES)+1;
-		die2=randomGenerator.nextInt(NUM_DIE_FACES)+1;
-		currentRoll=new DiceResult(die1,die2);
+		die1 = randomGenerator.nextInt(NUM_DIE_FACES)+1;
+		die2 = randomGenerator.nextInt(NUM_DIE_FACES)+1;
+		currentRoll = new DiceResult(die1,die2);
 		display.updateDiceFinal(currentRoll);
 		if(!hasValidMoves()){
 			gameState = GameState.GAME_LOST;
 			++numLosses;
 			display.gameLostUpdate();
-			return true;
-			//resetTilesState();
 		}
-		gameState = GameState.POST_DICE_ROLL;
+		else
+			gameState = GameState.POST_DICE_ROLL;
 		return true;
 	}
 	
@@ -78,7 +78,7 @@ public class GameEngine {
 	};
 	
 	public void newGame(){
-		gameState = gameState.PRE_DICE_ROLL;
+		gameState = GameState.PRE_DICE_ROLL;
 		resetTilesState();
 		display.newGameUpdate();
 	}
@@ -104,9 +104,7 @@ public class GameEngine {
 	}
 	
 	private void resetTilesState(){
-		//false corresponds to a tile not being flipped, and true for flipped.
-		for(int i = 0; i < tilesState.length; ++i)
-			tilesState[i] = false;
+		Arrays.fill(tilesState, false);
 		numTilesFlipped = 0;
 	}
 	

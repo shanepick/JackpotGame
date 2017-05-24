@@ -35,19 +35,6 @@ public class TextDisplay implements Display{
         System.out.println();
 	}
 
-	/*
-	public void invalidTileUpdate(InvalidTileStatus status) {
-		switch(status){
-		case TILE_ALREADY_FLIPPED:
-			System.out.println("Tile has already been flipped");
-			break;
-		case INVALID_MOVE:
-			System.out.println("Invalid move: must select tile number that " + 
-					"matches either die or the combined total of the dice");
-			break;
-		}
-	}*/
-
 	@Override
 	public void gameLostUpdate() {
 		System.out.println("You lose, no moves are possible");

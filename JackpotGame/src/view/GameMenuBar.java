@@ -32,7 +32,6 @@ public class GameMenuBar extends JMenuBar{
 		initializeViewMenu();
 		this.add(gameMenu);
 		this.add(viewMenu);
-		//createViewMenu();
 		
 	}
 	

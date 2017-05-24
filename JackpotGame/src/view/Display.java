@@ -1,7 +1,6 @@
 package view;
 
 import model.DiceResult;
-import model.GameEngine;
 
 public interface Display {
 	
@@ -10,8 +9,6 @@ public interface Display {
 	public void updateDiceFinal(DiceResult dice);
 	
 	public void flipTile(int tileNum);
-	
-//	public void invalidTileUpdate(GameEngine.InvalidTileStatus status);
 	
 	public void gameLostUpdate();
 	

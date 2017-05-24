@@ -32,6 +32,7 @@ public class DiceResult {
 		return die1Value + die2Value;
 	}
 	
+	@Override
 	public String toString(){
 		return "(" + die1Value + "," + die2Value + ")";
 	}

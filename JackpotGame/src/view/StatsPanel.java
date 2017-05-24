@@ -1,20 +1,16 @@
 package view;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class StatsPanel extends JPanel{
 
 	JLabel numWinsLabel, numLossesLabel, percentWinLabel;
 	
 	public StatsPanel(){
-		//this.setBorder(BorderFactory.createLineBorder(Color.black));
 		numWinsLabel = new JLabel();
 		numLossesLabel = new JLabel();
 		percentWinLabel = new JLabel();
@@ -24,7 +20,6 @@ public class StatsPanel extends JPanel{
 		this.add(numWinsLabel);
 		this.add(numLossesLabel);
 		this.add(percentWinLabel);
-		//this.setMaximumSize(new Dimension(400,30));
 	}
 	
 	public void updateStats(int numWins, int numLosses){

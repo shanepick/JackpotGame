@@ -1,17 +1,13 @@
 package view;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +15,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -29,12 +24,8 @@ import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
 
 import model.DiceResult;
 import model.GameEngine;
@@ -44,25 +35,44 @@ import model.GameEngine;
 @SuppressWarnings("serial")
 public class GameBoxPanel extends JPanel{
 	
-	private BufferedImage gameBoximage;
-	private BufferedImage startTileImages[];
-	private BufferedImage flippedTileImages[];
-	public static final int TILE_WIDTH = 60;
-	public static final int TILE_HEIGHT = 80;
-	public static final int EDGE_WIDTH = 20;
+	public static final int NUM_TILES = 9;
+	private static final int TILE_WIDTH = 60;
+	private static final int TILE_HEIGHT = 80;
+	//width of the outer edge surrounding the game box.
+	private static final int EDGE_WIDTH = 20;
+	private static final int GAME_BOX_WIDTH = 580;
+	//the gap to be put between the two die when displaying them.
 	private static final int DICE_GAP = 20;
+	//y coordinate of the top of where the rectangle of colored felt starts.
+	private static final int FELT_Y_COR = 98;
+	//size of the y dimension in felt rectangle;
+	private static final int FELT_Y_SIZE = 222;
+	//initial panel height and width, used to determine image scaling.
+	private static final int INITIAL_PANEL_HEIGHT = 696; 
+	private static final int INITIAL_PANEL_WIDTH = 349;
+	//image to represent the game box on which the game is played.
+	private BufferedImage gameBoximage;
+	//images of tiles with numbers on them, ie before being flipped.
+	private BufferedImage startTileImages[];
+	//images of the tiles when flipped over, spelling ".JACKPOT.".
+	private BufferedImage flippedTileImages[];
+	//transform used to scale the gameBox Image when window is re-sized.
 	private AffineTransform scaleTransform;
+	//gameBoxPanels copy of the tiles' states - updated when flipTile() called by gameEngine.
 	private boolean tilesState[];
-	private DieView dieImage1, dieImage2;
-	private GridBagConstraints c = new GridBagConstraints();
-	private GridBagConstraints d = new GridBagConstraints();
+	private DieImage dieImage1, dieImage2;
+	private GridBagConstraints emptyLabelConstraints, instructionPanelConstraints;
 	private JPanel instructionPanel;
 	private JLabel instructionLabel, instructionLabel2;
+	//left position within the Panel that the gameBox will be drawn. 
 	private int leftOffset = 0;
+	//x and y coordinates for dice positions, both dice have the same y coordinates.
 	private int die1_xCor, die2_xCor, die_yCor = 150;
+	//player instructions for display
 	private String[] instructions = { "Click on dice to roll", "Click on a numbered tile to flip it",
 			"You Win!", "You Lose.", "No More Moves Possible"};
 	public enum FeltColor { BLUE, GREEN, RED, BLACK };
+	//Contains the players current felt color preference.
 	private FeltColor colorChoice;
 	private JButton newGameButton;
 	private GameEngine gameEngine;
@@ -71,55 +81,78 @@ public class GameBoxPanel extends JPanel{
 	public GameBoxPanel(GameEngine gameEngine) {
 		
 		this.gameEngine = gameEngine;
-		tilesState = new boolean[GUI.NUM_TILES];
-		colorChoice = FeltColor.BLUE;
+		tilesState = new boolean[NUM_TILES];
+		//All tiles start off un-flipped.
 		Arrays.fill(tilesState, false);
-		dieImage1 = new DieView(1);
-		dieImage2 = new DieView(1);
+		colorChoice = FeltColor.BLUE;
+		dieImage1 = new DieImage(1);
+		dieImage2 = new DieImage(1);
 		try {                
-			gameBoximage = ImageIO.read(new File("images/board.png"));
+			gameBoximage = ImageIO.read(new File("images/gameBox.png"));
 	    } catch (IOException ex) {
 	        System.err.println("An error occurred: GameBox image file could not be opened.");
 	        System.exit(1);
 	    }
-		startTileImages = new BufferedImage[GUI.NUM_TILES];
-		flippedTileImages = new BufferedImage[GUI.NUM_TILES];
+		startTileImages = new BufferedImage[NUM_TILES];
+		flippedTileImages = new BufferedImage[NUM_TILES];
 		try {
 			for(int i = 0; i < startTileImages.length; ++i){
 				startTileImages[i] = ImageIO.read(new File("images/tile" + (i+1) + ".png"));
 			}
-			flippedTileImages[0] = ImageIO.read(new File("images/tileDot.png"));
-			//TODO change filename
-			flippedTileImages[1] = ImageIO.read(new File("images/tileJ.png"));
-			flippedTileImages[2] = ImageIO.read(new File("images/tileA.png"));
-			flippedTileImages[3] = ImageIO.read(new File("images/tileC.png"));
-			flippedTileImages[4] = ImageIO.read(new File("images/tileK.png"));
-			flippedTileImages[5] = ImageIO.read(new File("images/tileP.png"));
-			flippedTileImages[6] = ImageIO.read(new File("images/tileO.png"));
-			flippedTileImages[7] = ImageIO.read(new File("images/tileT.png"));
+			String tileLetters[] = { "Dot", "J", "A", "C","K", "P", "O", "T" };
+			for(int i = 0; i < tileLetters.length; ++i){
+				String fileName = "images/tile" + tileLetters[i] + ".png";
+				flippedTileImages[i] = ImageIO.read(new File(fileName));
+			}
 			flippedTileImages[8] = flippedTileImages[0];
 			
 		} catch (IOException ex) {
 	        System.err.println("An error occurred: tile image file could not be opened.");
 	        System.exit(1);
 	    }
-		//this.setSize(new Dimension(580,340));
-		this.addMouseListener(new TileListener());
+		this.addMouseListener(new GameBoxListener());
 		//this.setBackground(Color.cyan);
+		createInstructionPanel();
+		this.setLayout(new GridBagLayout());
+		
+		//As a bit of a hack, an empty label (not visible) is added above the 
+		//instruction Panel and weighted so that the instructionPanel appears in the 
+		//desired position.
+		emptyLabelConstraints = new GridBagConstraints();
+		instructionPanelConstraints = new GridBagConstraints();
+		
+		emptyLabelConstraints.weighty = 0.7;
+		emptyLabelConstraints.fill = GridBagConstraints.VERTICAL;
+		emptyLabelConstraints.gridx = 0;
+		emptyLabelConstraints.gridy = 0;
+		
+		instructionPanelConstraints.weighty = 0.20;
+		instructionPanelConstraints.fill = GridBagConstraints.VERTICAL;
+		instructionPanelConstraints.gridx = 0;
+		instructionPanelConstraints.gridy = 1;
+		
+		this.add(new JLabel(""),emptyLabelConstraints);
+		this.add(instructionPanel,instructionPanelConstraints);
+		
+	}
+	
+	private void createInstructionPanel(){
+		instructionPanel = new JPanel();
 		instructionLabel = new JLabel(instructions[0]);
-		//instructionLabel.setVerticalAlignment(JLabel.NORTH);
 		//instructionLabel.setBackground(Color.MAGENTA);
 		//instructionLabel.setOpaque(true);
 		instructionLabel.setForeground(Color.WHITE);
-		instructionLabel.setFont(new Font("SansSerif",Font.BOLD,18));
+		Font instructionFont = new Font("SansSerif",Font.BOLD,18);
+		instructionLabel.setFont(instructionFont);
 		instructionLabel.setAlignmentX(CENTER_ALIGNMENT);
 		instructionLabel2 = new JLabel(instructions[4]);
 		instructionLabel2.setForeground(Color.WHITE);
-		instructionLabel2.setFont(new Font("SansSerif",Font.BOLD,18));
+		instructionLabel2.setFont(instructionFont);
 		instructionLabel2.setAlignmentX(CENTER_ALIGNMENT);
 		instructionLabel2.setVisible(false);
 		newGameButton = new JButton("New Game");
 		newGameButton.setAlignmentX(CENTER_ALIGNMENT);
+		//newGameButton should only be visible when game is over.
 		newGameButton.setVisible(false);
 		newGameButton.addActionListener( new ActionListener() {
 			@Override
@@ -127,125 +160,94 @@ public class GameBoxPanel extends JPanel{
 				gameEngine.newGame();
 			}
 		});
-		
-		//instructionLabel2 = newJLabel("")
-		
-		instructionPanel = new JPanel();
-		instructionPanel.setBackground(Color.YELLOW);
+		//instructionPanel.setBackground(Color.YELLOW);
 		instructionPanel.setOpaque(false);
 		instructionPanel.setLayout(new BoxLayout(instructionPanel,BoxLayout.Y_AXIS));
+		
 		Dimension dim2 = new Dimension(0,20);
+		Dimension dim = new Dimension(0,5);
+		//empty filler components are added to ensure space between components.
 		instructionPanel.add(new Box.Filler(dim2,dim2,dim2));
 		instructionPanel.add(instructionLabel);
 		instructionPanel.add(instructionLabel2);
-		Dimension dim = new Dimension(0,5);
 		instructionPanel.add(new Box.Filler(dim, dim, dim));
 		instructionPanel.add(newGameButton);
-		
-		
-		this.setLayout(new GridBagLayout());
-		//this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-		//this.setLayout(null);
-		//test.setBackground(Color.BLACK);
-		//test.setPreferredSize(new Dimension(200,100));
-		
-		c.weighty = 0.7;
-		//c.anchor = GridBagConstraints.PAGE_END;
-		//c.insets = new Insets(200,30,30,30);
-		c.fill = GridBagConstraints.VERTICAL;
-		c.gridx = 0;
-		c.gridy = 0;
-		
-		d.weighty = 0.20;
-		d.fill = GridBagConstraints.VERTICAL;
-		d.gridx = 0;
-		d.gridy = 1;
-		//this.add(test,c);
-
-		this.add(new JLabel(""),c);
-		this.add(instructionPanel,d);
-		
 	}
+	
 	
 	@Override
 	protected void paintComponent(Graphics g) {
 
-		System.out.println("print paintComponent start");
-		//perhaps change to paint everything to buffered image first. 
-		//Graphics2D g2d = (Graphics2D) g;
 		int width = getParent().getWidth();
 		int height = getHeight();
 		
+		//Images of gameBox, tiles, and dice will be drawn on top of bufferedImage.
+		//After finished drawing on bufferedImage, bufferedImage is drawn onto GameBoxPanel.
+		//Size of drawn images will be scaled up or down based on size of Panel.
+		//ScaleFactor computed such that aspect ratio of gameBox will be retained.
+		//An affineTransform is used to achieve the scaling, as it transforms 
+		//original coordinates to scaled coordinates.
+		
 		BufferedImage bufferedImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) bufferedImage.createGraphics();
-		//super.paintComponent(g2d);
+		//System.out.println("width is " +width);
+		//System.out.println("height is: " +height);
 		
-		//g2d.drawImage(image,60,0,this);
-		System.out.println("width is " +width);
-		System.out.println("height is: " +height);
 		double scaleFactor = computeScaleFactor(width, height);
-		System.out.println("scale factor is " + scaleFactor);
-		g2d.scale(scaleFactor,scaleFactor);
-		//instructionLabel.setFont(new Font("SansSerif",Font.BOLD,(int) scaleFactor * 18));
+		//System.out.println("scale factor is " + scaleFactor);
+		//g2d.scale(scaleFactor,scaleFactor);
 		scaleTransform = new AffineTransform();
 		scaleTransform.scale(scaleFactor, scaleFactor);
 		g2d.setTransform(scaleTransform);
 		g2d.drawImage(gameBoximage,0,0,this);
 		//The felt color is blue by default on the loaded image. 
 		//For other colors it must be drawn over.
+		int feltRectWidth = GAME_BOX_WIDTH - 2 * EDGE_WIDTH;
+		
 		switch(colorChoice){
 		case GREEN: 
 			g2d.setColor(Color.getHSBColor(0.35f, 0.82f, 0.45f));
-			g2d.fillRect(20, 97, 540, 223);
+			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, 222);
 			break;
 		case RED:
 			g2d.setColor(Color.getHSBColor(0.036f, 0.90f, 0.51f));
-			g2d.fillRect(20, 97, 540, 223);
+			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, 222);
 			break;
 		case BLACK:
 			g2d.setColor(Color.getHSBColor(0.65f, 0.06f, 0.17f));
-			g2d.fillRect(20, 97, 540, 223);
+			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, 222);
 			break;
 		default:
 			break;
 		}
-
-		die1_xCor = (580/2) - DieView.DICESIZE - (DICE_GAP/ 2);
-		System.out.println(die1_xCor);
-		die2_xCor = die1_xCor + DieView.DICESIZE + DICE_GAP;
-		System.out.println(die2_xCor);
-		g2d.drawImage(dieImage1,die1_xCor,die_yCor,this);
-		g2d.drawImage(dieImage2,die2_xCor,die_yCor,this);
+		//draw in our dice.
+		die1_xCor = (GAME_BOX_WIDTH / 2) - dieImage1.getDiceSize() - (DICE_GAP / 2);
+		die2_xCor = die1_xCor + dieImage2.getDiceSize() + DICE_GAP;
+		g2d.drawImage(dieImage1, die1_xCor, die_yCor, this);
+		g2d.drawImage(dieImage2, die2_xCor, die_yCor, this);
+		//draw in the tiles, one by one, next to each other.
 		for(int i = 0; i < tilesState.length; ++i){
 			int xCor = EDGE_WIDTH + i * TILE_WIDTH;
 			if(tilesState[i] == false)
 				g2d.drawImage(startTileImages[i], xCor, EDGE_WIDTH, this);
 			else
-				g2d.drawImage(flippedTileImages[i], xCor, EDGE_WIDTH -14, this);
+				//flipped tiles need to appear higher-up then non-flipped tiles.
+				g2d.drawImage(flippedTileImages[i], xCor, EDGE_WIDTH - 15, this);
 		}
-		//c.insets = new Insets( (int) scaleFactor * 200, (int) scaleFactor * 30, (int) scaleFactor * 30, (int) scaleFactor * 30);
-		//revalidate();
 		super.paintComponent(g);
-		leftOffset = (int) Math.floor(((width - (scaleFactor * 580))/2 ));
-		System.out.println("leftOffset is" + leftOffset);
+		//calculate left coordinate such that gameBox image is centred on panel.
+		leftOffset = (int) ((width - (scaleFactor * GAME_BOX_WIDTH))/2 );
 		g.drawImage(bufferedImage,leftOffset,0,this);
-		
-		//Point dicePanelDimensions = new Point();
-		//scaleTransform.transform(new Point(250,60),dicePanelDimensions);
-		//test.setSize(dicePanelDimensions.x,dicePanelDimensions.y);
-		System.out.println("print paintComponent end");
 	}
 	
 	public void setColorChoice(FeltColor color){
 		colorChoice = color;
 		this.repaint();
 	}
-	
 
 	@Override
 	public Dimension getMaximumSize() {
 		Container parent = this.getParent();
-		System.out.println("getmaximum: parent hieght = " + parent.getWidth());
 		int width = parent.getWidth();
 	    return new Dimension(width, (int) (width/2.0) );
 	}
@@ -253,7 +255,6 @@ public class GameBoxPanel extends JPanel{
 	@Override
 	public Dimension getPreferredSize() {
 		Container parent = this.getParent();
-		System.out.println("getpreferred: parent hieght = " + parent.getWidth());
 		int width = parent.getWidth();
 	    return new Dimension(width, (int) (width/2.0) );
 	}
@@ -263,7 +264,6 @@ public class GameBoxPanel extends JPanel{
 		dieImage2.setDieValue(dice.getDie2());
 		instructionLabel.setText(instructions[1]);
 		repaint();
-		
 	}
 
 
@@ -296,7 +296,6 @@ public class GameBoxPanel extends JPanel{
 	}
 	
 	public void scaleText() {
-		System.out.println("scale text");
 		double scaleFactor = computeScaleFactor(getParent().getWidth(), getHeight());
 		int textSize = (int) Math.ceil(Math.max(8, 18 * scaleFactor));
 		int buttonTextSize = (int) Math.ceil(Math.max(6, 14 * scaleFactor));
@@ -306,10 +305,11 @@ public class GameBoxPanel extends JPanel{
 	}
 	
 	private double computeScaleFactor(int width, int height){
-		return Math.min( (width / 696.0), (height/349.0));
+		return Math.min( ( (double) width / INITIAL_PANEL_HEIGHT), 
+				( (double) height/ INITIAL_PANEL_WIDTH));
 	}
 	
-	private class TileListener extends MouseAdapter{
+	private class GameBoxListener extends MouseAdapter{
 
 		public void mouseClicked(MouseEvent e){
 			AffineTransform inverseTransform;
@@ -319,25 +319,24 @@ public class GameBoxPanel extends JPanel{
 				inverseTransform.transform(new Point(e.getX() - leftOffset,e.getY()), deScaled);
 				int x = deScaled.x;
 				int y = deScaled.y;
-				System.out.println(x + "," + y);
-				int tileSelected = 0;
-				//TODO change to left click only.
-				
-				//int panelWidth = gameBoxPanel.getWidth();
+				//check if clicked on a tile.
 				if(y > EDGE_WIDTH && y < TILE_HEIGHT + EDGE_WIDTH){
-					for(int i = 0; i < GUI.NUM_TILES; i++){
-						if(x > 20 + i * TILE_WIDTH && x <  20 + (i+1) * TILE_WIDTH){
+					for(int i = 0; i < NUM_TILES; i++){
+						if(x > EDGE_WIDTH + i * TILE_WIDTH 
+								&& x <  EDGE_WIDTH + (i+1) * TILE_WIDTH){
 							gameEngine.flipTile(i+1);
 							break;
 						}
 					}
 				}
-				else if(y >= die_yCor && y<= die_yCor + DieView.DICESIZE  
-						&& x >= die1_xCor && x <= die2_xCor + DieView.DICESIZE){
+				//check if clicked on dice.
+				else if(y >= die_yCor && y<= die_yCor + dieImage1.getDiceSize()  
+						&& x >= die1_xCor && x <= die2_xCor + dieImage2.getDiceSize()){
 					gameEngine.rollDice();
 
 				}
-				//System.out.println("tile selected was " + tileSelected);
+			//This exception can never happen since our simple Transform will 
+			//always have an inverse.
 			} catch (NoninvertibleTransformException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
