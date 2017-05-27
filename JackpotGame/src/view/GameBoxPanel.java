@@ -74,6 +74,7 @@ public class GameBoxPanel extends JPanel{
 	public enum FeltColor { BLUE, GREEN, RED, BLACK };
 	//Contains the players current felt color preference.
 	private FeltColor colorChoice;
+	private boolean showInstructions = true;
 	private JButton newGameButton;
 	private GameEngine gameEngine;
 	
@@ -275,12 +276,18 @@ public class GameBoxPanel extends JPanel{
 
 	public void gameLostUpdate() {
 		instructionLabel.setText(instructions[3]);
+		//even if player has chosen to hide instructions, still want to 
+		//display "You lose" message to player, so must set label to visible.
+		instructionLabel.setVisible(true);
 		instructionLabel2.setVisible(true);
 		newGameButton.setVisible(true);
 		this.repaint();
 	}
 
 	public void gameWonUpdate() {
+		//even if player has chosen to hide instructions, still want to
+		//display winning message to player.
+		instructionLabel.setVisible(true);
 		instructionLabel.setText(instructions[2]);
 		newGameButton.setVisible(true);
 		this.repaint();
@@ -290,6 +297,9 @@ public class GameBoxPanel extends JPanel{
 	public void newGameUpdate() {
 		Arrays.fill(tilesState, false);
 		instructionLabel.setText(instructions[0]);
+		if(showInstructions == false){
+			instructionLabel.setVisible(false);
+		}
 		instructionLabel2.setVisible(false);
 		newGameButton.setVisible(false);
 		this.repaint();
@@ -343,6 +353,19 @@ public class GameBoxPanel extends JPanel{
 			}
 
 		}
+	}
+
+	public void showInstructions() {
+		showInstructions = true;
+		instructionLabel.setVisible(true);
+	}
+	
+	public void hideInstructions() {
+		showInstructions = false;
+		String currentLabelText = instructionLabel.getText();
+		//if not currently display win/loss message.
+		if(!(currentLabelText == instructions[2] || currentLabelText == instructions[3]))
+			instructionLabel.setVisible(false);
 	}
 
 

@@ -21,7 +21,7 @@ public class GameMenuBar extends JMenuBar{
 	private GUI gui;
 	private JMenu gameMenu, viewMenu, colorMenu;
 	private JMenuItem newGame, exitGame, blue, green, red, black; 
-	private JCheckBoxMenuItem showStats;
+	private JCheckBoxMenuItem showStats,  showInstructions;
 	private MenuListener menuListener;
 	
 	public GameMenuBar(GameEngine gameEngine, GUI gui){
@@ -51,6 +51,9 @@ public class GameMenuBar extends JMenuBar{
 		viewMenu.setMnemonic(KeyEvent.VK_V);
 		colorMenu = new JMenu("Select Felt Color");
 		colorMenu.setMnemonic(KeyEvent.VK_F);
+		showInstructions = new JCheckBoxMenuItem("Show Instructions");
+		showInstructions.setSelected(true);
+		showInstructions.addActionListener(menuListener);
 		blue = new JRadioButtonMenuItem("Blue");
 		blue.setMnemonic(KeyEvent.VK_B);
 		blue.addActionListener(menuListener);
@@ -77,6 +80,7 @@ public class GameMenuBar extends JMenuBar{
 		showStats.setMnemonic(KeyEvent.VK_S);
 		showStats.addActionListener(menuListener);
 		showStats.setActionCommand("Stats");
+		viewMenu.add(showInstructions);
 		viewMenu.add(showStats);
 		viewMenu.add(colorMenu);
 	}
@@ -109,6 +113,12 @@ public class GameMenuBar extends JMenuBar{
 				else
 					gui.getStatsPanel().hideStats();
 					
+			}
+			else if(event.getActionCommand().equals("Show Instructions")){
+				if(showInstructions.getState())
+					gui.getGameBoxPanel().showInstructions();
+				else
+					gui.getGameBoxPanel().hideInstructions();
 			}
 		}
 
