@@ -32,14 +32,13 @@ public class GameEngine {
 		this.display = display;
 	}
 	
+
+	
 	public boolean rollDice(){
 		if(gameState != GameState.PRE_DICE_ROLL)
 			return false;
 		gameState = GameState.DURING_DICE_ROLL;
-		int die1,die2;
-		die1 = randomGenerator.nextInt(NUM_DIE_FACES)+1;
-		die2 = randomGenerator.nextInt(NUM_DIE_FACES)+1;
-		currentRoll = new DiceResult(die1,die2);
+		currentRoll = DiceResult.createRandomDiceResult();
 		display.updateDiceFinal(currentRoll);
 		if(!hasValidMoves()){
 			gameState = GameState.GAME_LOST;
