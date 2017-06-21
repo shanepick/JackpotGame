@@ -50,6 +50,10 @@ public class GameBoxPanel extends JPanel{
 	//initial panel height and width, used to determine image scaling.
 	private static final int INITIAL_PANEL_HEIGHT = 696; 
 	private static final int INITIAL_PANEL_WIDTH = 349;
+	//number of different dice values generated during dice roll for animated dice simulation.
+	private static final int NUM_DICE_VALUES = 5;
+	//delay between the display of each dice value during dice roll animation (in milliseconds).
+	private static final int DELAY = 60;
 	//image to represent the game box on which the game is played.
 	private BufferedImage gameBoximage;
 	//images of tiles with numbers on them, ie before being flipped.
@@ -69,8 +73,12 @@ public class GameBoxPanel extends JPanel{
 	//x and y coordinates for dice positions, both dice have the same y coordinates.
 	private int die1_xCor, die2_xCor, die_yCor = 150;
 	//player instructions for display
-	private String[] instructions = { "Click on dice to roll", "Click on a numbered tile to flip it",
-			"You Win!", "You Lose.", "No More Moves Possible"};
+	private String[] instructions = { 	"Click on dice to roll", 
+										"Click on a numbered tile to flip it",
+										"You Win!", 
+										"You Lose.", 
+										"No More Moves Possible"};
+	
 	public enum FeltColor { BLUE, GREEN, RED, BLACK };
 	//Contains the players current felt color preference.
 	private FeltColor colorChoice;
@@ -266,7 +274,12 @@ public class GameBoxPanel extends JPanel{
 		instructionLabel.setText(instructions[1]);
 		repaint();
 	}
-
+	
+	public void updateDiceIntermediate(DiceResult dice) {
+		dieImage1.setDieValue(dice.getDie1());
+		dieImage2.setDieValue(dice.getDie2());
+		repaint();
+	}
 
 	public void flipTile(int tileNum) {
 		instructionLabel.setText(instructions[0]);
@@ -319,6 +332,19 @@ public class GameBoxPanel extends JPanel{
 				( (double) height/ INITIAL_PANEL_WIDTH));
 	}
 	
+	public void showInstructions() {
+		showInstructions = true;
+		instructionLabel.setVisible(true);
+	}
+	
+	public void hideInstructions() {
+		showInstructions = false;
+		String currentLabelText = instructionLabel.getText();
+		//if not currently display win/loss message.
+		if(!(currentLabelText == instructions[2] || currentLabelText == instructions[3]))
+			instructionLabel.setVisible(false);
+	}
+	
 	private class GameBoxListener extends MouseAdapter{
 
 		public void mouseClicked(MouseEvent e){
@@ -342,7 +368,7 @@ public class GameBoxPanel extends JPanel{
 				//check if clicked on dice.
 				else if(y >= die_yCor && y<= die_yCor + dieImage1.getDiceSize()  
 						&& x >= die1_xCor && x <= die2_xCor + dieImage2.getDiceSize()){
-					gameEngine.rollDice();
+					gameEngine.rollDice(NUM_DICE_VALUES,DELAY);
 
 				}
 			//This exception can never happen since our simple Transform will 
@@ -355,20 +381,5 @@ public class GameBoxPanel extends JPanel{
 		}
 	}
 
-	public void showInstructions() {
-		showInstructions = true;
-		instructionLabel.setVisible(true);
-	}
-	
-	public void hideInstructions() {
-		showInstructions = false;
-		String currentLabelText = instructionLabel.getText();
-		//if not currently display win/loss message.
-		if(!(currentLabelText == instructions[2] || currentLabelText == instructions[3]))
-			instructionLabel.setVisible(false);
-	}
-
-
-	
 	
 }

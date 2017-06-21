@@ -61,7 +61,7 @@ public class GUI extends JFrame implements Display{
 
 	@Override
 	public void updateDiceIntermediate(DiceResult dice) {
-		
+		gameBoxPanel.updateDiceIntermediate(dice);
 	}
 
 	@Override
