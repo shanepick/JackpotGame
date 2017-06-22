@@ -107,5 +107,10 @@ public class GUI extends JFrame implements Display{
 			statsPanel.setTextSize(statsTextScaleFactor);
 	    }
 	}
+
+	public void showHelpScreen() {
+		System.out.println("test");
+		HelpScreen help = new HelpScreen(this);
+	}
 }
 
