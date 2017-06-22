@@ -77,12 +77,13 @@ public class GameBoxPanel extends JPanel{
 										"Click on a numbered tile to flip it",
 										"You Win!", 
 										"You Lose.", 
-										"No More Moves Possible"};
+										"No More Moves Possible."};
 	
 	public enum FeltColor { BLUE, GREEN, RED, BLACK };
 	//Contains the players current felt color preference.
 	private FeltColor colorChoice;
 	private boolean showInstructions = true;
+	private boolean showAnimation = true;
 	private JButton newGameButton;
 	private GameEngine gameEngine;
 	
@@ -113,6 +114,7 @@ public class GameBoxPanel extends JPanel{
 				String fileName = "images/tile" + tileLetters[i] + ".png";
 				flippedTileImages[i] = ImageIO.read(new File(fileName));
 			}
+			//the last tile is the same image as the first (tile with a dot on it).
 			flippedTileImages[8] = flippedTileImages[0];
 			
 		} catch (IOException ex) {
@@ -345,6 +347,10 @@ public class GameBoxPanel extends JPanel{
 			instructionLabel.setVisible(false);
 	}
 	
+	public void setShowAnimation(boolean state){
+		showAnimation = state;
+	}
+	
 	private class GameBoxListener extends MouseAdapter{
 
 		public void mouseClicked(MouseEvent e){
@@ -368,7 +374,10 @@ public class GameBoxPanel extends JPanel{
 				//check if clicked on dice.
 				else if(y >= die_yCor && y<= die_yCor + dieImage1.getDiceSize()  
 						&& x >= die1_xCor && x <= die2_xCor + dieImage2.getDiceSize()){
-					gameEngine.rollDice(NUM_DICE_VALUES,DELAY);
+					if(showAnimation)
+						gameEngine.rollDice(NUM_DICE_VALUES,DELAY);
+					else
+						gameEngine.rollDice();
 
 				}
 			//This exception can never happen since our simple Transform will 

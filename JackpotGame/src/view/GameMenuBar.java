@@ -21,7 +21,7 @@ public class GameMenuBar extends JMenuBar{
 	private GUI gui;
 	private JMenu gameMenu, viewMenu, colorMenu;
 	private JMenuItem newGame, exitGame, blue, green, red, black; 
-	private JCheckBoxMenuItem showStats,  showInstructions;
+	private JCheckBoxMenuItem showStats,  showInstructions, showAnimation;
 	private MenuListener menuListener;
 	
 	public GameMenuBar(GameEngine gameEngine, GUI gui){
@@ -80,8 +80,12 @@ public class GameMenuBar extends JMenuBar{
 		showStats.setMnemonic(KeyEvent.VK_S);
 		showStats.addActionListener(menuListener);
 		showStats.setActionCommand("Stats");
+		showAnimation = new JCheckBoxMenuItem("Show Dice Animation");
+		showAnimation.setSelected(true);
+		showAnimation.addActionListener(menuListener);
 		viewMenu.add(showInstructions);
 		viewMenu.add(showStats);
+		viewMenu.add(showAnimation);
 		viewMenu.add(colorMenu);
 	}
 	
@@ -119,6 +123,9 @@ public class GameMenuBar extends JMenuBar{
 					gui.getGameBoxPanel().showInstructions();
 				else
 					gui.getGameBoxPanel().hideInstructions();
+			}
+			else if(event.getActionCommand().equals("Show Dice Animation")){
+				gui.getGameBoxPanel().setShowAnimation(showAnimation.getState());
 			}
 		}
 
