@@ -19,9 +19,9 @@ public class GameMenuBar extends JMenuBar{
 
 	private GameEngine gameEngine;
 	private GUI gui;
-	private JMenu gameMenu, viewMenu, colorMenu;
+	private JMenu gameMenu, viewMenu, settingsMenu, colorMenu;
 	private JMenuItem newGame, exitGame, blue, green, red, black; 
-	private JCheckBoxMenuItem showStats,  showInstructions, showAnimation;
+	private JCheckBoxMenuItem showStats,  showInstructions, showAnimation, autoDiceRoll;
 	private MenuListener menuListener;
 	
 	public GameMenuBar(GameEngine gameEngine, GUI gui){
@@ -30,8 +30,10 @@ public class GameMenuBar extends JMenuBar{
 		menuListener = new MenuListener();
 		initializeGameMenu();
 		initializeViewMenu();
+		initializeSettingsMenu();
 		this.add(gameMenu);
 		this.add(viewMenu);
+		this.add(settingsMenu);
 		
 	}
 	
@@ -89,6 +91,15 @@ public class GameMenuBar extends JMenuBar{
 		viewMenu.add(colorMenu);
 	}
 	
+	private void initializeSettingsMenu(){
+		settingsMenu = new JMenu("Settings");
+		settingsMenu.setMnemonic(KeyEvent.VK_S);
+		autoDiceRoll = new JCheckBoxMenuItem("Automatic Dice Roll");
+		autoDiceRoll.setSelected(false);
+		autoDiceRoll.addActionListener(menuListener);
+		settingsMenu.add(autoDiceRoll);
+	}
+	
 	public class MenuListener implements ActionListener {
 		
 		@Override
@@ -126,6 +137,9 @@ public class GameMenuBar extends JMenuBar{
 			}
 			else if(event.getActionCommand().equals("Show Dice Animation")){
 				gui.getGameBoxPanel().setShowAnimation(showAnimation.getState());
+			}
+			else if(event.getActionCommand().equals("Automatic Dice Roll")){
+				gui.getGameBoxPanel().setAutoDiceRoll(autoDiceRoll.getState());
 			}
 		}
 

@@ -84,6 +84,7 @@ public class GameBoxPanel extends JPanel{
 	private FeltColor colorChoice;
 	private boolean showInstructions = true;
 	private boolean showAnimation = true;
+	private boolean autoDiceRoll = false;
 	private JButton newGameButton;
 	private GameEngine gameEngine;
 	
@@ -284,7 +285,10 @@ public class GameBoxPanel extends JPanel{
 	}
 
 	public void flipTile(int tileNum) {
-		instructionLabel.setText(instructions[0]);
+		if(!autoDiceRoll)
+			instructionLabel.setText(instructions[0]);
+		else
+			instructionLabel.setText("");
 		tilesState[tileNum - 1] = true;
 		this.repaint();
 	}
@@ -311,13 +315,18 @@ public class GameBoxPanel extends JPanel{
 
 	public void newGameUpdate() {
 		Arrays.fill(tilesState, false);
-		instructionLabel.setText(instructions[0]);
+		if(!autoDiceRoll)
+			instructionLabel.setText(instructions[0]);
+		else
+			instructionLabel.setText("");
 		if(showInstructions == false){
 			instructionLabel.setVisible(false);
 		}
 		instructionLabel2.setVisible(false);
 		newGameButton.setVisible(false);
 		this.repaint();
+		if(autoDiceRoll)
+			rollDice();
 	}
 	
 	public void scaleText() {
@@ -351,6 +360,17 @@ public class GameBoxPanel extends JPanel{
 		showAnimation = state;
 	}
 	
+	public void setAutoDiceRoll(boolean state){
+		autoDiceRoll = state;
+	}
+	
+	private void rollDice(){
+		if(showAnimation)
+			gameEngine.rollDice(NUM_DICE_VALUES,DELAY);
+		else
+			gameEngine.rollDice();
+	}
+	
 	private class GameBoxListener extends MouseAdapter{
 
 		public void mouseClicked(MouseEvent e){
@@ -367,6 +387,8 @@ public class GameBoxPanel extends JPanel{
 						if(x > EDGE_WIDTH + i * TILE_WIDTH 
 								&& x <  EDGE_WIDTH + (i+1) * TILE_WIDTH){
 							gameEngine.flipTile(i+1);
+							if(autoDiceRoll)
+								rollDice();
 							break;
 						}
 					}
@@ -374,10 +396,9 @@ public class GameBoxPanel extends JPanel{
 				//check if clicked on dice.
 				else if(y >= die_yCor && y<= die_yCor + dieImage1.getDiceSize()  
 						&& x >= die1_xCor && x <= die2_xCor + dieImage2.getDiceSize()){
+					
 					if(showAnimation)
-						gameEngine.rollDice(NUM_DICE_VALUES,DELAY);
-					else
-						gameEngine.rollDice();
+						rollDice();
 
 				}
 			//This exception can never happen since our simple Transform will 
