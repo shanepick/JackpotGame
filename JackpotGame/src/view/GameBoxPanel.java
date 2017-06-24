@@ -60,6 +60,8 @@ public class GameBoxPanel extends JPanel{
 	private BufferedImage startTileImages[];
 	//images of the tiles when flipped over, spelling ".JACKPOT.".
 	private BufferedImage flippedTileImages[];
+	//images of the numbered tiles to be displayed when mouse cursor is over the tile.
+	private BufferedImage mouseOverTileImages[];
 	//transform used to scale the gameBox Image when window is re-sized.
 	private AffineTransform scaleTransform;
 	//gameBoxPanels copy of the tiles' states - updated when flipTile() called by gameEngine.
@@ -82,6 +84,7 @@ public class GameBoxPanel extends JPanel{
 	public enum FeltColor { BLUE, GREEN, RED, BLACK };
 	//Contains the players current felt color preference.
 	private FeltColor colorChoice;
+	private int lastMouseOver = -1;
 	private boolean showInstructions = true;
 	private boolean showAnimation = true;
 	private boolean autoDiceRoll = false;
@@ -105,10 +108,12 @@ public class GameBoxPanel extends JPanel{
 	        System.exit(1);
 	    }
 		startTileImages = new BufferedImage[NUM_TILES];
+		mouseOverTileImages = new BufferedImage[NUM_TILES];
 		flippedTileImages = new BufferedImage[NUM_TILES];
 		try {
 			for(int i = 0; i < startTileImages.length; ++i){
 				startTileImages[i] = ImageIO.read(new File("images/tile" + (i+1) + ".png"));
+				mouseOverTileImages[i] = ImageIO.read(new File("images/tile" + (i+1) + "s.png"));
 			}
 			String tileLetters[] = { "Dot", "J", "A", "C","K", "P", "O", "T" };
 			for(int i = 0; i < tileLetters.length; ++i){
@@ -122,7 +127,9 @@ public class GameBoxPanel extends JPanel{
 	        System.err.println("An error occurred: tile image file could not be opened.");
 	        System.exit(1);
 	    }
-		this.addMouseListener(new GameBoxListener());
+		GameBoxListener listener = new GameBoxListener();
+		this.addMouseListener(listener);
+		this.addMouseMotionListener(listener);
 		//this.setBackground(Color.cyan);
 		createInstructionPanel();
 		this.setLayout(new GridBagLayout());
@@ -219,15 +226,15 @@ public class GameBoxPanel extends JPanel{
 		switch(colorChoice){
 		case GREEN: 
 			g2d.setColor(Color.getHSBColor(0.35f, 0.82f, 0.45f));
-			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, 222);
+			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, FELT_Y_SIZE);
 			break;
 		case RED:
 			g2d.setColor(Color.getHSBColor(0.036f, 0.90f, 0.51f));
-			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, 222);
+			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, FELT_Y_SIZE);
 			break;
 		case BLACK:
 			g2d.setColor(Color.getHSBColor(0.65f, 0.06f, 0.17f));
-			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, 222);
+			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, FELT_Y_SIZE);
 			break;
 		default:
 			break;
@@ -240,11 +247,19 @@ public class GameBoxPanel extends JPanel{
 		//draw in the tiles, one by one, next to each other.
 		for(int i = 0; i < tilesState.length; ++i){
 			int xCor = EDGE_WIDTH + i * TILE_WIDTH;
-			if(tilesState[i] == false)
+			if(tilesState[i] == false){
 				g2d.drawImage(startTileImages[i], xCor, EDGE_WIDTH, this);
-			else
+			}
+			else{
 				//flipped tiles need to appear higher-up then non-flipped tiles.
 				g2d.drawImage(flippedTileImages[i], xCor, EDGE_WIDTH - 15, this);
+			}
+		}
+		//if mouse is currently over a tile, and tile is not flipped, override image with 
+		//mouse-over image.
+		if(lastMouseOver >= 0 && tilesState[lastMouseOver] == false){
+			int xCor = EDGE_WIDTH + lastMouseOver * TILE_WIDTH;
+			g2d.drawImage(mouseOverTileImages[lastMouseOver], xCor, EDGE_WIDTH, this);
 		}
 		super.paintComponent(g);
 		//calculate left coordinate such that gameBox image is centred on panel.
@@ -372,42 +387,67 @@ public class GameBoxPanel extends JPanel{
 	}
 	
 	private class GameBoxListener extends MouseAdapter{
-
+		
+		int x,y;
+		
 		public void mouseClicked(MouseEvent e){
-			AffineTransform inverseTransform;
-			try {
-				inverseTransform = scaleTransform.createInverse();
-				Point deScaled = new Point();
-				inverseTransform.transform(new Point(e.getX() - leftOffset,e.getY()), deScaled);
-				int x = deScaled.x;
-				int y = deScaled.y;
-				//check if clicked on a tile.
-				if(y > EDGE_WIDTH && y < TILE_HEIGHT + EDGE_WIDTH){
-					for(int i = 0; i < NUM_TILES; i++){
-						if(x > EDGE_WIDTH + i * TILE_WIDTH 
-								&& x <  EDGE_WIDTH + (i+1) * TILE_WIDTH){
-							gameEngine.flipTile(i+1);
-							if(autoDiceRoll)
-								rollDice();
-							break;
-						}
+			
+			//have to subtract offset to account for space on the left and work out 
+			//position on the actual gameBox image.  Then must convert
+			//scaled image coordinates to original image coordinates.
+			unscaleCoords(e.getX() - leftOffset, e.getY());
+			//check if clicked on a tile.
+			if(y > EDGE_WIDTH && y < TILE_HEIGHT + EDGE_WIDTH){
+				for(int i = 0; i < NUM_TILES; i++){
+					if(x > EDGE_WIDTH + i * TILE_WIDTH 
+							&& x <  EDGE_WIDTH + (i+1) * TILE_WIDTH){
+						gameEngine.flipTile(i+1);
+						if(autoDiceRoll)
+							rollDice();
+						break;
 					}
 				}
-				//check if clicked on dice.
-				else if(y >= die_yCor && y<= die_yCor + dieImage1.getDiceSize()  
-						&& x >= die1_xCor && x <= die2_xCor + dieImage2.getDiceSize()){
+			}
+			//check if clicked on dice.
+			else if(y >= die_yCor && y<= die_yCor + dieImage1.getDiceSize()  
+					&& x >= die1_xCor && x <= die2_xCor + dieImage2.getDiceSize()){
 					
-					if(showAnimation)
-						rollDice();
-
+				if(showAnimation)
+					rollDice();
+			}
+		}
+		
+		public void mouseMoved(MouseEvent e){
+			int currentMouseOver = - 1;
+			unscaleCoords(e.getX() - leftOffset, e.getY());
+			if(y > EDGE_WIDTH && y < TILE_HEIGHT + EDGE_WIDTH){
+				for(int i = 0; i < NUM_TILES; i++){
+					if(x > EDGE_WIDTH + i * TILE_WIDTH 
+							&& x <  EDGE_WIDTH + (i+1) * TILE_WIDTH){
+						currentMouseOver = i;
+						
+					}
 				}
-			//This exception can never happen since our simple Transform will 
-			//always have an inverse.
+			}
+			if(currentMouseOver != lastMouseOver){
+				lastMouseOver = currentMouseOver;
+				GameBoxPanel.this.repaint();
+			}
+		}
+		
+		private void unscaleCoords(int scaledX, int scaledY){
+			try{
+				AffineTransform inverseTransform = scaleTransform.createInverse();
+				Point deScaled = new Point();
+				inverseTransform.transform(new Point(scaledX, scaledY), deScaled);
+				x = deScaled.x;
+				y = deScaled.y;
+				//This exception can never happen since our simple Transform will 
+				//always have an inverse.
 			} catch (NoninvertibleTransformException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
 		}
 	}
 
