@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 import model.DiceResult;
 import model.GameEngine;
+import view.HelpScreen.Tab;
 
 @SuppressWarnings("serial")
 public class GUI extends JFrame implements Display{
@@ -108,9 +109,9 @@ public class GUI extends JFrame implements Display{
 	    }
 	}
 
-	public void showHelpScreen() {
+	public void showHelpScreen(Tab tab) {
 		System.out.println("test");
-		HelpScreen help = new HelpScreen(this);
+		HelpScreen help = new HelpScreen(this, tab);
 	}
 }
 

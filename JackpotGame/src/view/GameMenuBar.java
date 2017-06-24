@@ -13,6 +13,7 @@ import javax.swing.JRadioButtonMenuItem;
 
 import model.GameEngine;
 import view.GameBoxPanel.FeltColor;
+import view.HelpScreen.Tab;
 
 @SuppressWarnings("serial")
 public class GameMenuBar extends JMenuBar{
@@ -157,8 +158,10 @@ public class GameMenuBar extends JMenuBar{
 				gui.getGameBoxPanel().setAutoDiceRoll(autoDiceRoll.getState());
 			}
 			else if(event.getActionCommand().equals("How to Play")){
-				System.out.println("test");
-				gui.showHelpScreen();
+				gui.showHelpScreen(Tab.HOW_TO_PLAY);
+			}
+			else if(event.getActionCommand().equals("Settings")){
+				gui.showHelpScreen(Tab.SETTINGS);
 			}
 		}
 
