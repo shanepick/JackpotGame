@@ -29,6 +29,8 @@ import javax.swing.JPanel;
 
 import model.DiceResult;
 import model.GameEngine;
+import model.GameEngine.FlipTileOutcome;
+import model.GameEngine.GameState;
 
 
 
@@ -69,7 +71,7 @@ public class GameBoxPanel extends JPanel{
 	private DieImage dieImage1, dieImage2;
 	private GridBagConstraints emptyLabelConstraints, instructionPanelConstraints;
 	private JPanel instructionPanel;
-	private JLabel instructionLabel, instructionLabel2;
+	private JLabel instructionLabel, instructionLabel2, errorLabel;
 	//left position within the Panel that the gameBox will be drawn. 
 	private int leftOffset = 0;
 	//x and y coordinates for dice positions, both dice have the same y coordinates.
@@ -80,6 +82,7 @@ public class GameBoxPanel extends JPanel{
 										"You Win!", 
 										"You Lose.", 
 										"No More Moves Possible."};
+	private String errorMsg = "Invalid tile Selection";
 	
 	public enum FeltColor { BLUE, GREEN, RED, BLACK };
 	//Contains the players current felt color preference.
@@ -164,11 +167,19 @@ public class GameBoxPanel extends JPanel{
 		Font instructionFont = new Font("SansSerif",Font.BOLD,18);
 		instructionLabel.setFont(instructionFont);
 		instructionLabel.setAlignmentX(CENTER_ALIGNMENT);
+		
 		instructionLabel2 = new JLabel(instructions[4]);
 		instructionLabel2.setForeground(Color.WHITE);
 		instructionLabel2.setFont(instructionFont);
 		instructionLabel2.setAlignmentX(CENTER_ALIGNMENT);
 		instructionLabel2.setVisible(false);
+		
+		errorLabel = new JLabel(errorMsg);
+		errorLabel.setAlignmentX(CENTER_ALIGNMENT);
+		errorLabel.setForeground(Color.getHSBColor(0.65f, 0.15f, 0.55f));
+		errorLabel.setFont(instructionFont);
+		errorLabel.setVisible(false);
+		
 		newGameButton = new JButton("New Game");
 		newGameButton.setAlignmentX(CENTER_ALIGNMENT);
 		//newGameButton should only be visible when game is over.
@@ -187,6 +198,7 @@ public class GameBoxPanel extends JPanel{
 		Dimension dim = new Dimension(0,5);
 		//empty filler components are added to ensure space between components.
 		instructionPanel.add(new Box.Filler(dim2,dim2,dim2));
+		instructionPanel.add(errorLabel);
 		instructionPanel.add(instructionLabel);
 		instructionPanel.add(instructionLabel2);
 		instructionPanel.add(new Box.Filler(dim, dim, dim));
@@ -257,7 +269,8 @@ public class GameBoxPanel extends JPanel{
 		}
 		//if mouse is currently over a tile, and tile is not flipped, override image with 
 		//mouse-over image.
-		if(lastMouseOver >= 0 && tilesState[lastMouseOver] == false){
+		if(lastMouseOver >= 0 && tilesState[lastMouseOver] == false && 
+				gameEngine.getGameState() == GameState.POST_DICE_ROLL){
 			int xCor = EDGE_WIDTH + lastMouseOver * TILE_WIDTH;
 			g2d.drawImage(mouseOverTileImages[lastMouseOver], xCor, EDGE_WIDTH, this);
 		}
@@ -350,6 +363,7 @@ public class GameBoxPanel extends JPanel{
 		int buttonTextSize = (int) Math.ceil(Math.max(6, 14 * scaleFactor));
 		instructionLabel.setFont(new Font("SansSerif",Font.BOLD,textSize));
 		instructionLabel2.setFont(new Font("SansSerif",Font.BOLD,textSize));
+		errorLabel.setFont(new Font("SansSerif",Font.BOLD,textSize));
 		newGameButton.setFont(new Font("SansSerif",Font.BOLD,buttonTextSize));
 	}
 	
@@ -401,7 +415,10 @@ public class GameBoxPanel extends JPanel{
 				for(int i = 0; i < NUM_TILES; i++){
 					if(x > EDGE_WIDTH + i * TILE_WIDTH 
 							&& x <  EDGE_WIDTH + (i+1) * TILE_WIDTH){
-						gameEngine.flipTile(i+1);
+						if(gameEngine.flipTile(i+1) == FlipTileOutcome.INVALID_MOVE)
+							errorLabel.setVisible(true);
+						else
+							errorLabel.setVisible(false);
 						if(autoDiceRoll)
 							rollDice();
 						break;
