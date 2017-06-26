@@ -238,11 +238,13 @@ public class GameBoxPanel extends JPanel{
 		
 		switch(colorChoice){
 		case GREEN: 
-			g2d.setColor(Color.getHSBColor(0.35f, 0.82f, 0.45f));
+			//g2d.setColor(Color.getHSBColor(0.35f, 0.82f, 0.45f));
+			g2d.setColor(Color.getHSBColor(0.3f, 0.82f, 0.40f));
 			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, FELT_Y_SIZE);
 			break;
 		case RED:
-			g2d.setColor(Color.getHSBColor(0.036f, 0.90f, 0.51f));
+			//g2d.setColor(Color.getHSBColor(0.036f, 0.90f, 0.51f));
+			g2d.setColor(Color.getHSBColor(0.02f, 0.93f, 0.7f));
 			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, FELT_Y_SIZE);
 			break;
 		case BLACK:
