@@ -1,5 +1,7 @@
 package Client;
 
+import javax.swing.SwingUtilities;
+
 import model.GameEngine;
 import view.GUI;
 
@@ -12,7 +14,12 @@ public class GuiClient {
 	}
 	
 	public static void main(String Args[]){
-		GuiClient client = new GuiClient();
-		client.runGame();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+            	GuiClient client = new GuiClient();
+            	client.runGame();
+            }
+        });
 	}
 }

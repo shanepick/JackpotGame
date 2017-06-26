@@ -91,6 +91,7 @@ public class GameBoxPanel extends JPanel{
 	private boolean showInstructions = true;
 	private boolean showAnimation = true;
 	private boolean autoDiceRoll = false;
+	private boolean showErrorMessage = true;
 	private JButton newGameButton;
 	private GameEngine gameEngine;
 	
@@ -400,6 +401,11 @@ public class GameBoxPanel extends JPanel{
 			gameEngine.rollDice();
 	}
 	
+	public void setShowErrorMessage(boolean state) {
+		showErrorMessage = state;
+		
+	}
+	
 	private class GameBoxListener extends MouseAdapter{
 		
 		int x,y;
@@ -413,9 +419,9 @@ public class GameBoxPanel extends JPanel{
 			//check if clicked on a tile.
 			if(y > EDGE_WIDTH && y < TILE_HEIGHT + EDGE_WIDTH){
 				for(int i = 0; i < NUM_TILES; i++){
-					if(x > EDGE_WIDTH + i * TILE_WIDTH 
-							&& x <  EDGE_WIDTH + (i+1) * TILE_WIDTH){
-						if(gameEngine.flipTile(i+1) == FlipTileOutcome.INVALID_MOVE)
+					if(x > EDGE_WIDTH + i * TILE_WIDTH  && x < EDGE_WIDTH + (i+1) * TILE_WIDTH){
+						if(gameEngine.flipTile(i+1) == FlipTileOutcome.INVALID_MOVE 
+								&& showErrorMessage == true)
 							errorLabel.setVisible(true);
 						else
 							errorLabel.setVisible(false);
@@ -459,14 +465,16 @@ public class GameBoxPanel extends JPanel{
 				inverseTransform.transform(new Point(scaledX, scaledY), deScaled);
 				x = deScaled.x;
 				y = deScaled.y;
-				//This exception can never happen since our simple Transform will 
-				//always have an inverse.
+			//This exception can never happen since our simple Transform will 
+			//always have an inverse.
 			} catch (NoninvertibleTransformException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
 	}
+
+
 
 	
 }

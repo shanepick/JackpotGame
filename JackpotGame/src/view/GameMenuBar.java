@@ -22,7 +22,7 @@ public class GameMenuBar extends JMenuBar{
 	private GUI gui;
 	private JMenu gameMenu, viewMenu, settingsMenu, colorMenu, helpMenu;
 	private JMenuItem newGame, exitGame, blue, green, red, black, howToPlay, helpSettings; 
-	private JCheckBoxMenuItem showStats,  showInstructions, showAnimation, autoDiceRoll;
+	private JCheckBoxMenuItem showStats,  showInstructions, showAnimation, showErrorMsg, autoDiceRoll;
 	private MenuListener menuListener;
 	
 	public GameMenuBar(GameEngine gameEngine, GUI gui){
@@ -85,12 +85,12 @@ public class GameMenuBar extends JMenuBar{
 		showStats.setMnemonic(KeyEvent.VK_S);
 		showStats.addActionListener(menuListener);
 		showStats.setActionCommand("Stats");
-		showAnimation = new JCheckBoxMenuItem("Show Dice Animation");
-		showAnimation.setSelected(true);
-		showAnimation.addActionListener(menuListener);
+		showErrorMsg = new JCheckBoxMenuItem("Show Error Messages");
+		showErrorMsg.setSelected(true);
+		showErrorMsg.addActionListener(menuListener);
 		viewMenu.add(showInstructions);
+		viewMenu.add(showErrorMsg);
 		viewMenu.add(showStats);
-		viewMenu.add(showAnimation);
 		viewMenu.add(colorMenu);
 	}
 	
@@ -100,7 +100,11 @@ public class GameMenuBar extends JMenuBar{
 		autoDiceRoll = new JCheckBoxMenuItem("Automatic Dice Roll");
 		autoDiceRoll.setSelected(false);
 		autoDiceRoll.addActionListener(menuListener);
+		showAnimation = new JCheckBoxMenuItem("Show Dice Animation");
+		showAnimation.setSelected(true);
+		showAnimation.addActionListener(menuListener);
 		settingsMenu.add(autoDiceRoll);
+		settingsMenu.add(showAnimation);
 	}
 	
 	private void initializeHelpMenu(){
@@ -162,6 +166,10 @@ public class GameMenuBar extends JMenuBar{
 			}
 			else if(event.getActionCommand().equals("Settings")){
 				gui.showHelpScreen(Tab.SETTINGS);
+			}
+			else if(event.getActionCommand().equals("Show Error Messages")){
+				System.out.println("test");
+				gui.getGameBoxPanel().setShowErrorMessage(showErrorMsg.getState());
 			}
 		}
 

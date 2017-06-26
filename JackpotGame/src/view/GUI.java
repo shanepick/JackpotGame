@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import model.DiceResult;
@@ -110,8 +111,15 @@ public class GUI extends JFrame implements Display{
 	}
 
 	public void showHelpScreen(Tab tab) {
-		System.out.println("test");
-		HelpScreen help = new HelpScreen(this, tab);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+            	HelpScreen help = new HelpScreen(GUI.this, tab);
+            	//help.scrollPane1.getVerticalScrollBar().setValue(0);
+            }
+        });
+        
 	}
+
 }
 
