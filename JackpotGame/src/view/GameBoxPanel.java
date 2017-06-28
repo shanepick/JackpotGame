@@ -37,7 +37,7 @@ import model.GameEngine.GameState;
 @SuppressWarnings("serial")
 public class GameBoxPanel extends JPanel{
 	
-	public static final int NUM_TILES = 9;
+	private static final int NUM_TILES = 9;
 	private static final int TILE_WIDTH = 60;
 	private static final int TILE_HEIGHT = 80;
 	//width of the outer edge surrounding the game box.

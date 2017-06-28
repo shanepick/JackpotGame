@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class StatsPanel extends JPanel{
 
-	JLabel numWinsLabel, numLossesLabel, percentWinLabel;
+	private JLabel numWinsLabel, numLossesLabel, percentWinLabel;
 	
 	public StatsPanel(){
 		numWinsLabel = new JLabel();

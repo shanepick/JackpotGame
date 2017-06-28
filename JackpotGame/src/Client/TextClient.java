@@ -10,8 +10,8 @@ import view.TextDisplay;
 
 public class TextClient {
 	
-	GameEngine gameEngine;
-	Display display;
+	private GameEngine gameEngine;
+	private Display display;
 	
 	public TextClient(){
 		gameEngine = new GameEngine();

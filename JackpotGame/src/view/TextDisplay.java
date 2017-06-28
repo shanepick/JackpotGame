@@ -7,10 +7,9 @@ import model.DiceResult;
 
 public class TextDisplay implements Display{
 	
-	char startTiles[] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-	char flippedTiles[] = { '*', 'J', 'A', 'C', 'K', 'P', 'O', 'T', '*' };
-	char Tiles[];
-	Scanner scan;
+	private char startTiles[] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+	private char flippedTiles[] = { '*', 'J', 'A', 'C', 'K', 'P', 'O', 'T', '*' };
+	private char Tiles[];
 	
 	public TextDisplay(){
 		Tiles = Arrays.copyOf(startTiles,startTiles.length);

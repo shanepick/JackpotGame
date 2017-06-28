@@ -9,8 +9,7 @@ import view.Display;
 
 public class GameEngine {
 
-	public static final int NUM_TILES = 9;
-	public static final int NUM_DIE_FACES = 6;
+	private static final int NUM_TILES = 9;
 	//contains tile state: false corresponds to a tile not being flipped, and true for flipped.
 	private boolean tilesState[]; 
 	private int numTilesFlipped = 0;
@@ -20,7 +19,7 @@ public class GameEngine {
 	private DiceResult currentRoll = null; //the player's last roll.
 	public enum FlipTileOutcome { TILE_ALREADY_FLIPPED, INVALID_MOVE, DICE_NOT_ROLLED, SUCCESS }
 	public enum GameState { PRE_DICE_ROLL, DURING_DICE_ROLL, POST_DICE_ROLL, GAME_WON, GAME_LOST };
-	protected GameState gameState;
+	private GameState gameState;
 	
 	public GameEngine(){
 		tilesState = new boolean[NUM_TILES];
