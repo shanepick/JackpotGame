@@ -49,8 +49,6 @@ public class GUI extends JFrame implements Display{
 		combinedPanel.add(statsPanel);
 		contentPane.add(title,BorderLayout.NORTH);
 		contentPane.add(combinedPanel);
-		
-		//contentPane.add(statsPanel);
 		this.setJMenuBar(menu);
 		this.setVisible(true);
 		this.addComponentListener(new resizeListener());
@@ -105,7 +103,6 @@ public class GUI extends JFrame implements Display{
 	    public void componentResized(ComponentEvent e) {
 			gameBoxPanel.scaleText();
 			double statsTextScaleFactor = (double) getWidth() / FRAME_WIDTH;
-			System.out.println("statsTextScaleFactor " + statsTextScaleFactor);
 			statsPanel.setTextSize(statsTextScaleFactor);
 	    }
 	}
@@ -114,8 +111,7 @@ public class GUI extends JFrame implements Display{
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-            	HelpScreen help = new HelpScreen(GUI.this, tab);
-            	//help.scrollPane1.getVerticalScrollBar().setValue(0);
+            	new HelpScreen(GUI.this, tab);
             }
         });
         

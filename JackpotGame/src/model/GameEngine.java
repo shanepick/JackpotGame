@@ -39,6 +39,7 @@ public class GameEngine {
 		gameState = GameState.DURING_DICE_ROLL;
 		currentRoll = DiceResult.createRandomDiceResult();
 		display.updateDiceFinal(currentRoll);
+		//change state to POST_DICE_ROLL or GAME_LOST if no moves possible.
 		updateGameState();
 		return true;
 		
@@ -60,7 +61,6 @@ public class GameEngine {
 			public void run(){
 				if(count <= numRolls){
 					DiceResult intermediateRoll = DiceResult.createRandomDiceResult();
-					//System.out.println("intermediateTest : " + count + " " + intermediateRoll.toString());
 					if(count++ < numRolls){
 						display.updateDiceIntermediate(intermediateRoll);
 						ses.schedule(this, delay, TimeUnit.MILLISECONDS);

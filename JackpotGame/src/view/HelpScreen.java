@@ -118,12 +118,10 @@ public class HelpScreen extends JFrame {
         try {
 			doc.insertString(doc.getLength(), howToPlayHeading, sc.getStyle("headingStyle"));
 			doc.insertString(doc.getLength(), howToPlayText, sc.getStyle("mainStyle"));
-			//doc.setParagraphAttributes(doc.getLength(), length, s, true);
 			doc.setParagraphAttributes(0, howToPlayHeading.length(), sc.getStyle("headingStyle"), true);
 			
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Error: Help screen text was not displayed correctly.");
 		}
         return textPane;
 		
@@ -150,8 +148,7 @@ public class HelpScreen extends JFrame {
 			doc.setParagraphAttributes(0, settingsHeading.length(), sc.getStyle("headingStyle"), true);
 			
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Error: Help screen text was not displayed correctly.");
 		}
         return textPane;
 		

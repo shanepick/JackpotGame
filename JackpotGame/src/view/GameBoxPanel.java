@@ -47,6 +47,8 @@ public class GameBoxPanel extends JPanel{
 	private static final int DICE_GAP = 20;
 	//y coordinate of the top of where the rectangle of colored felt starts.
 	private static final int FELT_Y_COR = 98;
+	//y coordinate for flipped tile. 
+	private static final int FLIPPED_TILE_Y_COR = 5;
 	//size of the y dimension in felt rectangle;
 	private static final int FELT_Y_SIZE = 222;
 	//initial panel height and width, used to determine image scaling.
@@ -134,7 +136,6 @@ public class GameBoxPanel extends JPanel{
 		GameBoxListener listener = new GameBoxListener();
 		this.addMouseListener(listener);
 		this.addMouseMotionListener(listener);
-		//this.setBackground(Color.cyan);
 		createInstructionPanel();
 		this.setLayout(new GridBagLayout());
 		
@@ -162,8 +163,6 @@ public class GameBoxPanel extends JPanel{
 	private void createInstructionPanel(){
 		instructionPanel = new JPanel();
 		instructionLabel = new JLabel(instructions[0]);
-		//instructionLabel.setBackground(Color.MAGENTA);
-		//instructionLabel.setOpaque(true);
 		instructionLabel.setForeground(Color.WHITE);
 		Font instructionFont = new Font("SansSerif",Font.BOLD,18);
 		instructionLabel.setFont(instructionFont);
@@ -191,7 +190,6 @@ public class GameBoxPanel extends JPanel{
 				gameEngine.newGame();
 			}
 		});
-		//instructionPanel.setBackground(Color.YELLOW);
 		instructionPanel.setOpaque(false);
 		instructionPanel.setLayout(new BoxLayout(instructionPanel,BoxLayout.Y_AXIS));
 		
@@ -222,12 +220,7 @@ public class GameBoxPanel extends JPanel{
 		
 		BufferedImage bufferedImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) bufferedImage.createGraphics();
-		//System.out.println("width is " +width);
-		//System.out.println("height is: " +height);
-		
 		double scaleFactor = computeScaleFactor(width, height);
-		//System.out.println("scale factor is " + scaleFactor);
-		//g2d.scale(scaleFactor,scaleFactor);
 		scaleTransform = new AffineTransform();
 		scaleTransform.scale(scaleFactor, scaleFactor);
 		g2d.setTransform(scaleTransform);
@@ -238,12 +231,10 @@ public class GameBoxPanel extends JPanel{
 		
 		switch(colorChoice){
 		case GREEN: 
-			//g2d.setColor(Color.getHSBColor(0.35f, 0.82f, 0.45f));
 			g2d.setColor(Color.getHSBColor(0.3f, 0.82f, 0.40f));
 			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, FELT_Y_SIZE);
 			break;
 		case RED:
-			//g2d.setColor(Color.getHSBColor(0.036f, 0.90f, 0.51f));
 			g2d.setColor(Color.getHSBColor(0.02f, 0.93f, 0.7f));
 			g2d.fillRect(EDGE_WIDTH, FELT_Y_COR, feltRectWidth, FELT_Y_SIZE);
 			break;
@@ -267,11 +258,11 @@ public class GameBoxPanel extends JPanel{
 			}
 			else{
 				//flipped tiles need to appear higher-up then non-flipped tiles.
-				g2d.drawImage(flippedTileImages[i], xCor, EDGE_WIDTH - 15, this);
+				g2d.drawImage(flippedTileImages[i], xCor, FLIPPED_TILE_Y_COR, this);
 			}
 		}
 		//if mouse is currently over a tile, and tile is not flipped, override image with 
-		//mouse-over image.
+		//mouse-over tile image.
 		if(lastMouseOver >= 0 && tilesState[lastMouseOver] == false && 
 				gameEngine.getGameState() == GameState.POST_DICE_ROLL){
 			int xCor = EDGE_WIDTH + lastMouseOver * TILE_WIDTH;
@@ -410,6 +401,7 @@ public class GameBoxPanel extends JPanel{
 	
 	private class GameBoxListener extends MouseAdapter{
 		
+		//de-scaled mouse coordinates
 		int x,y;
 		
 		public void mouseClicked(MouseEvent e){
@@ -475,8 +467,6 @@ public class GameBoxPanel extends JPanel{
 			}
 		}
 	}
-
-
 
 	
 }
