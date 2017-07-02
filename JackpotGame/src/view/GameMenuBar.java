@@ -134,6 +134,7 @@ public class GameMenuBar extends JMenuBar{
 				gameEngine.newGame();
 			}
 			else if(event.getActionCommand().equals(exitGame.getText())){
+				gui.saveSettings();
 				System.exit(0);
 			}
 			else if(event.getActionCommand().equals("Blue")){
