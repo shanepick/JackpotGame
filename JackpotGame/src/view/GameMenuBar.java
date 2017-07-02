@@ -80,14 +80,15 @@ public class GameMenuBar extends JMenuBar{
 		colorMenu.add(black);
 		showInstructions = new JCheckBoxMenuItem("Show Instructions");
 		showInstructions.setMnemonic(KeyEvent.VK_I);
-		showInstructions.setSelected(true);
+		showInstructions.setSelected(gui.getGameBoxPanel().getShowInstructions());
 		showInstructions.addActionListener(menuListener);
 		showErrorMsg = new JCheckBoxMenuItem("Show Error Messages");
 		showErrorMsg.setMnemonic(KeyEvent.VK_E);
-		showErrorMsg.setSelected(true);
+		showErrorMsg.setSelected(gui.getGameBoxPanel().getShowErrorMessage());
 		showErrorMsg.addActionListener(menuListener);
 		showStats = new JCheckBoxMenuItem("Show Win/Loss Statistics");
 		showStats.setMnemonic(KeyEvent.VK_W);
+		showStats.setSelected(gui.getShowStats());
 		showStats.addActionListener(menuListener);
 		showStats.setActionCommand("Stats");
 		viewMenu.add(showInstructions);
@@ -101,11 +102,11 @@ public class GameMenuBar extends JMenuBar{
 		settingsMenu.setMnemonic(KeyEvent.VK_S);
 		autoDiceRoll = new JCheckBoxMenuItem("Automatic Dice Roll");
 		autoDiceRoll.setMnemonic(KeyEvent.VK_A);
-		autoDiceRoll.setSelected(false);
+		autoDiceRoll.setSelected(gui.getGameBoxPanel().getAutoDiceRoll());
 		autoDiceRoll.addActionListener(menuListener);
 		showAnimation = new JCheckBoxMenuItem("Show Dice Animation");
 		showAnimation.setMnemonic(KeyEvent.VK_S);
-		showAnimation.setSelected(true);
+		showAnimation.setSelected(gui.getGameBoxPanel().getShowAnimation());
 		showAnimation.addActionListener(menuListener);
 		settingsMenu.add(autoDiceRoll);
 		settingsMenu.add(showAnimation);
@@ -150,17 +151,10 @@ public class GameMenuBar extends JMenuBar{
 				gui.getGameBoxPanel().setColorChoice(FeltColor.BLACK);
 			}
 			else if(event.getActionCommand().equals("Stats")){
-				if(showStats.getState())
-					gui.getStatsPanel().showStats();
-				else
-					gui.getStatsPanel().hideStats();
-					
+				gui.setShowStats(showStats.getState());
 			}
 			else if(event.getActionCommand().equals("Show Instructions")){
-				if(showInstructions.getState())
-					gui.getGameBoxPanel().showInstructions();
-				else
-					gui.getGameBoxPanel().hideInstructions();
+				gui.getGameBoxPanel().setShowInstructions(showInstructions.getState());
 			}
 			else if(event.getActionCommand().equals("Show Dice Animation")){
 				gui.getGameBoxPanel().setShowAnimation(showAnimation.getState());

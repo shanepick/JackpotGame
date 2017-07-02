@@ -15,7 +15,7 @@ public class StatsPanel extends JPanel{
 		numLossesLabel = new JLabel();
 		percentWinLabel = new JLabel();
 		this.updateStats(0, 0);
-		this.hideStats();
+		//this.hideStats();
 		this.setLayout(new FlowLayout());
 		this.add(numWinsLabel);
 		this.add(numLossesLabel);
@@ -38,17 +38,20 @@ public class StatsPanel extends JPanel{
 		this.repaint();
 	}
 	
-	public void showStats(){
+	/*public void showStats(){
 		numWinsLabel.setVisible(true);
 		numLossesLabel.setVisible(true);
 		percentWinLabel.setVisible(true);
-	}
+	}*/
 	
+	/*
 	public void hideStats(){
 		numWinsLabel.setVisible(false);
 		numLossesLabel.setVisible(false);
 		percentWinLabel.setVisible(false);
-	}
+	}*/
+	
+
 
 	public void setTextSize(double statsTextScaleFactor) {
 		if(statsTextScaleFactor > 1){
