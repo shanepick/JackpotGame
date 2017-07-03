@@ -43,12 +43,20 @@ public class GUI extends JFrame implements Display{
 	//Panel to combine gameBoxPanel and statsPanel into the one panel
 	private JPanel combinedPanel;
 	private int lastWidth, lastHeight, last_xCor, last_yCor;
-	private boolean showStats = false;
 	
 	
 	public GUI(GameEngine gameEngine){
 		super("Jackpot Game");
 		this.gameEngine = gameEngine;
+		menu = new GameMenuBar(gameEngine, this);
+		if(loadSettings()==false){
+			this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+			this.setLocationByPlatform(true);
+		}
+		JLabel title = new JLabel("JACKPOT GAME");
+		title.setFont(new Font("serif",0,34));
+		title.setHorizontalAlignment(SwingConstants.CENTER);
+		title.setBorder(new EmptyBorder(30,30,30,30));
 		combinedPanel = new JPanel();
 		combinedPanel.setLayout(new BoxLayout(combinedPanel,BoxLayout.Y_AXIS));
 		gameBoxPanel = new GameBoxPanel(gameEngine);
@@ -56,28 +64,15 @@ public class GUI extends JFrame implements Display{
 		Container contentPane = this.getContentPane();
 		combinedPanel.add(gameBoxPanel);
 		combinedPanel.add(statsPanel);
-		if(loadSettings()==false){
-			statsPanel.setVisible(false);
-			this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-			this.setLocationByPlatform(true);
-		}
-		menu = new GameMenuBar(gameEngine, this);
-		JLabel title = new JLabel("JACKPOT GAME");
-		title.setFont(new Font("serif",0,34));
-		title.setHorizontalAlignment(SwingConstants.CENTER);
-		title.setBorder(new EmptyBorder(30,30,30,30));
 		contentPane.add(title,BorderLayout.NORTH);
 		contentPane.add(combinedPanel);
 		this.setJMenuBar(menu);
 		GUI_Listener listener = new GUI_Listener();
 		this.addWindowListener(listener);
 		this.addWindowStateListener(listener);
+		this.setVisible(true);
 		this.addComponentListener(new resizeListener());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		gameEngine.addDisplay(this);
-		this.setVisible(true);
-		gameBoxPanel.newGameUpdate();
-			
 	}
 	
 	public GameBoxPanel getGameBoxPanel(){
@@ -119,18 +114,9 @@ public class GUI extends JFrame implements Display{
 		gameBoxPanel.newGameUpdate();
 	}
 
-/*	public StatsPanel getStatsPanel() {
+	public StatsPanel getStatsPanel() {
 		return statsPanel;
 		
-	}*/
-	
-	public void setShowStats(boolean state){
-		showStats = state;
-		statsPanel.setVisible(showStats);
-	}
-	
-	public boolean getShowStats(){
-		return showStats;
 	}
 	
 	public void showHelpScreen(Tab tab) {
@@ -172,12 +158,6 @@ public class GUI extends JFrame implements Display{
 		settings.setProperty("y", String.valueOf(yCor));
 		settings.setProperty("w", String.valueOf(width));
 		settings.setProperty("h", String.valueOf(height));
-		//gameBoxPanel.saveSettings(settings);
-		settings.setProperty("showInstructions", String.valueOf(gameBoxPanel.getShowInstructions()));
-		settings.setProperty("showAnimation", String.valueOf(gameBoxPanel.getShowAnimation()));
-		settings.setProperty("autoDiceRoll", String.valueOf(gameBoxPanel.getAutoDiceRoll()));
-		settings.setProperty("showErrorMessage", String.valueOf(gameBoxPanel.getShowErrorMessage()));
-		settings.setProperty("showStats", String.valueOf(showStats));
 		
 		try {
 			BufferedWriter br = new BufferedWriter(new FileWriter(file));
@@ -193,7 +173,6 @@ public class GUI extends JFrame implements Display{
         Properties settings = new Properties();
         BufferedReader br;
         int x,y,h,w;
-        boolean showInstructions, showAnimation, autoDiceRoll, showErrorMessage, showStats;
 		try {
 			br = new BufferedReader(new FileReader(file));
 			settings.load(br);
@@ -212,16 +191,6 @@ public class GUI extends JFrame implements Display{
 			h = Integer.parseInt(h_string);
 			w = Integer.parseInt(w_string);
 		}
-		showInstructions = Boolean.parseBoolean(settings.getProperty("showInstructions","true"));
-		showAnimation = Boolean.parseBoolean(settings.getProperty("showAnimation","true"));
-		autoDiceRoll = Boolean.parseBoolean(settings.getProperty("autoDiceRoll","false"));
-		showErrorMessage = Boolean.parseBoolean(settings.getProperty("showErrorMessage","true"));
-		showStats = Boolean.parseBoolean(settings.getProperty("showStats","false"));
-		gameBoxPanel.setShowInstructions(showInstructions);
-		gameBoxPanel.setShowAnimation(showAnimation);
-		gameBoxPanel.setAutoDiceRoll(autoDiceRoll);
-		gameBoxPanel.setShowErrorMessage(showErrorMessage);
-		this.setShowStats(showStats);
 		this.setSize(w, h);
 		this.setLocation(x, y);
         return true;
@@ -239,6 +208,7 @@ public class GUI extends JFrame implements Display{
 		}
 		
 		public void windowClosing(WindowEvent e){
+			System.out.println("test");
 			saveSettings();
 		}
 	}
