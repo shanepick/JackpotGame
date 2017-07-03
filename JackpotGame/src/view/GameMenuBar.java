@@ -90,7 +90,7 @@ public class GameMenuBar extends JMenuBar{
 		showStats.setMnemonic(KeyEvent.VK_W);
 		showStats.setSelected(gui.getStatsPanel().getShowStats());
 		showStats.addActionListener(menuListener);
-		showStats.setActionCommand("Stats");
+		//showStats.setActionCommand("Stats");
 		viewMenu.add(showInstructions);
 		viewMenu.add(showErrorMsg);
 		viewMenu.add(showStats);
@@ -138,38 +138,37 @@ public class GameMenuBar extends JMenuBar{
 				gui.saveSettings();
 				System.exit(0);
 			}
-			else if(event.getActionCommand().equals("Blue")){
+			else if(event.getActionCommand().equals(blue.getText())){
 				gui.getGameBoxPanel().setColorChoice(FeltColor.BLUE);
 			}
-			else if(event.getActionCommand().equals("Green")){
+			else if(event.getActionCommand().equals(green.getText())){
 				gui.getGameBoxPanel().setColorChoice(FeltColor.GREEN);
 			}
-			else if(event.getActionCommand().equals("Red")){
+			else if(event.getActionCommand().equals(red.getText())){
 				gui.getGameBoxPanel().setColorChoice(FeltColor.RED);
 			}
-			else if(event.getActionCommand().equals("Black")){
+			else if(event.getActionCommand().equals(black.getText())){
 				gui.getGameBoxPanel().setColorChoice(FeltColor.BLACK);
 			}
-			else if(event.getActionCommand().equals("Stats")){
+			else if(event.getActionCommand().equals(showStats.getText())){
 				gui.getStatsPanel().setShowStats(showStats.getState());
 			}
-			else if(event.getActionCommand().equals("Show Instructions")){
+			else if(event.getActionCommand().equals(showInstructions.getText())){
 				gui.getGameBoxPanel().setShowInstructions(showInstructions.getState());
 			}
-			else if(event.getActionCommand().equals("Show Dice Animation")){
+			else if(event.getActionCommand().equals(showAnimation.getText())){
 				gui.getGameBoxPanel().setShowAnimation(showAnimation.getState());
 			}
-			else if(event.getActionCommand().equals("Automatic Dice Roll")){
+			else if(event.getActionCommand().equals(autoDiceRoll.getText())){
 				gui.getGameBoxPanel().setAutoDiceRoll(autoDiceRoll.getState());
 			}
-			else if(event.getActionCommand().equals("How to Play")){
+			else if(event.getActionCommand().equals(howToPlay.getText())){
 				gui.showHelpScreen(Tab.HOW_TO_PLAY);
 			}
-			else if(event.getActionCommand().equals("Settings")){
+			else if(event.getActionCommand().equals(helpSettings.getText())){
 				gui.showHelpScreen(Tab.SETTINGS);
 			}
-			else if(event.getActionCommand().equals("Show Error Messages")){
-				System.out.println("test");
+			else if(event.getActionCommand().equals(showErrorMsg.getText())){
 				gui.getGameBoxPanel().setShowErrorMessage(showErrorMsg.getState());
 			}
 		}
