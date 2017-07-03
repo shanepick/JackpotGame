@@ -19,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Properties;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -157,7 +158,6 @@ public class GameBoxPanel extends JPanel{
 		
 		this.add(new JLabel(""),emptyLabelConstraints);
 		this.add(instructionPanel,instructionPanelConstraints);
-		
 	}
 	
 	private void createInstructionPanel(){
@@ -307,6 +307,7 @@ public class GameBoxPanel extends JPanel{
 	}
 
 	public void flipTile(int tileNum) {
+		//if dice rolled automatically, no need to give roll dice instruction.
 		if(!autoDiceRoll)
 			instructionLabel.setText(instructions[0]);
 		else
@@ -366,17 +367,21 @@ public class GameBoxPanel extends JPanel{
 				( (double) height/ INITIAL_PANEL_WIDTH));
 	}
 	
-	public void showInstructions() {
-		showInstructions = true;
-		instructionLabel.setVisible(true);
+	public void setShowInstructions(boolean state){
+		showInstructions = state;
+		if(showInstructions){
+			instructionLabel.setVisible(true);
+		}
+		else{
+			String currentLabelText = instructionLabel.getText();
+			//if not currently displaying win/loss message.
+			if(!(currentLabelText == instructions[2] || currentLabelText == instructions[3]))
+				instructionLabel.setVisible(false);
+		}
 	}
 	
-	public void hideInstructions() {
-		showInstructions = false;
-		String currentLabelText = instructionLabel.getText();
-		//if not currently display win/loss message.
-		if(!(currentLabelText == instructions[2] || currentLabelText == instructions[3]))
-			instructionLabel.setVisible(false);
+	public void setShowErrorMessage(boolean state) {
+		showErrorMessage = state;
 	}
 	
 	public void setShowAnimation(boolean state){
@@ -387,6 +392,22 @@ public class GameBoxPanel extends JPanel{
 		autoDiceRoll = state;
 	}
 	
+	public boolean getShowInstructions(){
+		return showInstructions;
+	}
+	
+	public boolean getShowErrorMessage(){
+		return showErrorMessage;
+	}
+	
+	public boolean getShowAnimation(){
+		return showAnimation;
+	}
+	
+	public boolean getAutoDiceRoll(){
+		return autoDiceRoll;
+	}
+	
 	private void rollDice(){
 		if(showAnimation)
 			gameEngine.rollDice(NUM_DICE_VALUES,DELAY);
@@ -394,10 +415,16 @@ public class GameBoxPanel extends JPanel{
 			gameEngine.rollDice();
 	}
 	
-	public void setShowErrorMessage(boolean state) {
-		showErrorMessage = state;
-		
-	}
+
+	
+/*	public void saveSettings(Properties settings) {
+		settings.setProperty("showInstructions", String.valueOf(showInstructions));
+		settings.setProperty("showAnimation", String.valueOf(showAnimation));
+		settings.setProperty("autoDiceRoll", String.valueOf(autoDiceRoll));
+		settings.setProperty("showErrorMessage", String.valueOf(showErrorMessage));
+	}*/
+
+
 	
 	private class GameBoxListener extends MouseAdapter{
 		
@@ -467,6 +494,8 @@ public class GameBoxPanel extends JPanel{
 			}
 		}
 	}
+
+
 
 	
 }
