@@ -356,7 +356,7 @@ public class GameBoxPanel extends JPanel{
 			rollDice();
 	}
 	
-	public void scaleText() {
+	public double scaleText() {
 		double scaleFactor = computeScaleFactor(getParent().getWidth(), getHeight());
 		int textSize = (int) Math.ceil(Math.max(8, 18 * scaleFactor));
 		int buttonTextSize = (int) Math.ceil(Math.max(6, 14 * scaleFactor));
@@ -364,6 +364,7 @@ public class GameBoxPanel extends JPanel{
 		instructionLabel2.setFont(new Font("SansSerif",Font.BOLD,textSize));
 		errorLabel.setFont(new Font("SansSerif",Font.BOLD,textSize));
 		newGameButton.setFont(new Font("SansSerif",Font.BOLD,buttonTextSize));
+		return scaleFactor;
 	}
 	
 	private double computeScaleFactor(int width, int height){

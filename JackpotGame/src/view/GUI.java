@@ -44,7 +44,7 @@ public class GUI extends JFrame implements Display{
 	//Panel to combine gameBoxPanel and statsPanel into the one panel
 	private JPanel combinedPanel;
 	private int lastWidth, lastHeight, last_xCor, last_yCor;
-	//private boolean showStats = false;
+	private JLabel title;
 	
 	
 	public GUI(GameEngine gameEngine){
@@ -58,7 +58,7 @@ public class GUI extends JFrame implements Display{
 			this.setLocationByPlatform(true);
 		}
 		menu = new GameMenuBar(gameEngine, this);
-		JLabel title = new JLabel("JACKPOT GAME");
+		title = new JLabel("JACKPOT GAME");
 		title.setFont(new Font("serif",0,34));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		title.setBorder(new EmptyBorder(30,30,30,30));
@@ -143,15 +143,6 @@ public class GUI extends JFrame implements Display{
         });
 	}
 	
-	public class resizeListener extends ComponentAdapter{
-	    @Override
-		public void componentResized(ComponentEvent e) {
-			gameBoxPanel.scaleText();
-			double statsTextScaleFactor = (double) getWidth() / FRAME_WIDTH;
-			statsPanel.setTextSize(statsTextScaleFactor);
-	    }
-	}
-	
 	public void saveSettings(){
 		File file = new File(FILENAME);
 		Properties settings = new Properties();
@@ -230,6 +221,20 @@ public class GUI extends JFrame implements Display{
 		this.setSize(w, h);
 		this.setLocation(x, y);
         return true;
+	}
+	
+	public class resizeListener extends ComponentAdapter{
+	    @Override
+		public void componentResized(ComponentEvent e) {
+			double scaleFactor = gameBoxPanel.scaleText();
+			//double statsTextScaleFactor = (double) getWidth() / FRAME_WIDTH;
+			statsPanel.setTextSize(scaleFactor);
+			double diff = scaleFactor - 1;
+			diff = diff/2;
+			double titleScaleFactor = 1 + diff;
+			int titleFontSize = (int) ( 34 * titleScaleFactor);
+			title.setFont(new Font("serif",0,titleFontSize));
+	    }
 	}
 	
 	public class GUI_Listener extends WindowAdapter{
