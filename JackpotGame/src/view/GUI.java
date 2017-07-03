@@ -29,6 +29,7 @@ import javax.swing.border.EmptyBorder;
 
 import model.DiceResult;
 import model.GameEngine;
+import view.GameBoxPanel.FeltColor;
 import view.HelpScreen.Tab;
 
 @SuppressWarnings("serial")
@@ -39,25 +40,20 @@ public class GUI extends JFrame implements Display{
 	private GameBoxPanel gameBoxPanel;
 	private GameEngine gameEngine;
 	private JMenuBar menu;
-	private StatsPanel statsPanel = new StatsPanel();
+	private StatsPanel statsPanel;
 	//Panel to combine gameBoxPanel and statsPanel into the one panel
 	private JPanel combinedPanel;
 	private int lastWidth, lastHeight, last_xCor, last_yCor;
-	private boolean showStats = false;
+	//private boolean showStats = false;
 	
 	
 	public GUI(GameEngine gameEngine){
 		super("Jackpot Game");
 		this.gameEngine = gameEngine;
-		combinedPanel = new JPanel();
-		combinedPanel.setLayout(new BoxLayout(combinedPanel,BoxLayout.Y_AXIS));
 		gameBoxPanel = new GameBoxPanel(gameEngine);
 		gameBoxPanel.setAlignmentX(CENTER_ALIGNMENT);
-		Container contentPane = this.getContentPane();
-		combinedPanel.add(gameBoxPanel);
-		combinedPanel.add(statsPanel);
+		statsPanel = new StatsPanel();;
 		if(loadSettings()==false){
-			statsPanel.setVisible(false);
 			this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 			this.setLocationByPlatform(true);
 		}
@@ -66,6 +62,11 @@ public class GUI extends JFrame implements Display{
 		title.setFont(new Font("serif",0,34));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		title.setBorder(new EmptyBorder(30,30,30,30));
+		combinedPanel = new JPanel();
+		combinedPanel.setLayout(new BoxLayout(combinedPanel,BoxLayout.Y_AXIS));
+		combinedPanel.add(gameBoxPanel);
+		combinedPanel.add(statsPanel);
+		Container contentPane = this.getContentPane();
 		contentPane.add(title,BorderLayout.NORTH);
 		contentPane.add(combinedPanel);
 		this.setJMenuBar(menu);
@@ -119,19 +120,19 @@ public class GUI extends JFrame implements Display{
 		gameBoxPanel.newGameUpdate();
 	}
 
-/*	public StatsPanel getStatsPanel() {
+	public StatsPanel getStatsPanel() {
 		return statsPanel;
 		
-	}*/
+	}
 	
-	public void setShowStats(boolean state){
+/*	public void setShowStats(boolean state){
 		showStats = state;
 		statsPanel.setVisible(showStats);
 	}
 	
 	public boolean getShowStats(){
 		return showStats;
-	}
+	}*/
 	
 	public void showHelpScreen(Tab tab) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -177,7 +178,8 @@ public class GUI extends JFrame implements Display{
 		settings.setProperty("showAnimation", String.valueOf(gameBoxPanel.getShowAnimation()));
 		settings.setProperty("autoDiceRoll", String.valueOf(gameBoxPanel.getAutoDiceRoll()));
 		settings.setProperty("showErrorMessage", String.valueOf(gameBoxPanel.getShowErrorMessage()));
-		settings.setProperty("showStats", String.valueOf(showStats));
+		settings.setProperty("showStats", String.valueOf(statsPanel.getShowStats()));
+		settings.setProperty("color", String.valueOf(gameBoxPanel.getColorChoice()));
 		
 		try {
 			BufferedWriter br = new BufferedWriter(new FileWriter(file));
@@ -194,6 +196,7 @@ public class GUI extends JFrame implements Display{
         BufferedReader br;
         int x,y,h,w;
         boolean showInstructions, showAnimation, autoDiceRoll, showErrorMessage, showStats;
+        FeltColor color;
 		try {
 			br = new BufferedReader(new FileReader(file));
 			settings.load(br);
@@ -217,11 +220,13 @@ public class GUI extends JFrame implements Display{
 		autoDiceRoll = Boolean.parseBoolean(settings.getProperty("autoDiceRoll","false"));
 		showErrorMessage = Boolean.parseBoolean(settings.getProperty("showErrorMessage","true"));
 		showStats = Boolean.parseBoolean(settings.getProperty("showStats","false"));
+		color = FeltColor.valueOf(settings.getProperty("color","BLUE"));
 		gameBoxPanel.setShowInstructions(showInstructions);
 		gameBoxPanel.setShowAnimation(showAnimation);
 		gameBoxPanel.setAutoDiceRoll(autoDiceRoll);
 		gameBoxPanel.setShowErrorMessage(showErrorMessage);
-		this.setShowStats(showStats);
+		gameBoxPanel.setColorChoice(color);
+		this.getStatsPanel().setShowStats(showStats);
 		this.setSize(w, h);
 		this.setLocation(x, y);
         return true;

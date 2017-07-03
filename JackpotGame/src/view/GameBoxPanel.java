@@ -278,6 +278,10 @@ public class GameBoxPanel extends JPanel{
 		colorChoice = color;
 		this.repaint();
 	}
+	
+	public FeltColor getColorChoice(){
+		return colorChoice;
+	}
 
 	@Override
 	public Dimension getMaximumSize() {
@@ -382,6 +386,9 @@ public class GameBoxPanel extends JPanel{
 	
 	public void setShowErrorMessage(boolean state) {
 		showErrorMessage = state;
+		if(showErrorMessage == false){
+			errorLabel.setVisible(false);
+		}
 	}
 	
 	public void setShowAnimation(boolean state){

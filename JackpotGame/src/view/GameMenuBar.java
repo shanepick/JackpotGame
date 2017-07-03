@@ -88,7 +88,7 @@ public class GameMenuBar extends JMenuBar{
 		showErrorMsg.addActionListener(menuListener);
 		showStats = new JCheckBoxMenuItem("Show Win/Loss Statistics");
 		showStats.setMnemonic(KeyEvent.VK_W);
-		showStats.setSelected(gui.getShowStats());
+		showStats.setSelected(gui.getStatsPanel().getShowStats());
 		showStats.addActionListener(menuListener);
 		showStats.setActionCommand("Stats");
 		viewMenu.add(showInstructions);
@@ -151,7 +151,7 @@ public class GameMenuBar extends JMenuBar{
 				gui.getGameBoxPanel().setColorChoice(FeltColor.BLACK);
 			}
 			else if(event.getActionCommand().equals("Stats")){
-				gui.setShowStats(showStats.getState());
+				gui.getStatsPanel().setShowStats(showStats.getState());
 			}
 			else if(event.getActionCommand().equals("Show Instructions")){
 				gui.getGameBoxPanel().setShowInstructions(showInstructions.getState());

@@ -9,13 +9,14 @@ import javax.swing.JPanel;
 public class StatsPanel extends JPanel{
 
 	private JLabel numWinsLabel, numLossesLabel, percentWinLabel;
+	private boolean showStats = false;
 	
 	public StatsPanel(){
 		numWinsLabel = new JLabel();
 		numLossesLabel = new JLabel();
 		percentWinLabel = new JLabel();
 		this.updateStats(0, 0);
-		//this.hideStats();
+		this.setShowStats(false);
 		this.setLayout(new FlowLayout());
 		this.add(numWinsLabel);
 		this.add(numLossesLabel);
@@ -38,7 +39,19 @@ public class StatsPanel extends JPanel{
 		this.repaint();
 	}
 	
-	/*public void showStats(){
+	public void setShowStats(boolean state){
+		showStats = state;
+		numWinsLabel.setVisible(state);
+		numLossesLabel.setVisible(state);
+		percentWinLabel.setVisible(state);
+	}
+	
+	public boolean getShowStats(){
+		return showStats;
+	}
+	
+	/*
+	public void showStats(){
 		numWinsLabel.setVisible(true);
 		numLossesLabel.setVisible(true);
 		percentWinLabel.setVisible(true);
