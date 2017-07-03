@@ -18,10 +18,9 @@ import javax.swing.text.StyledDocument;
 
 public class HelpScreen extends JFrame {
 	
-	private String howToPlayText, howToPlayHeading, settingsHeading, settingsSubHeading1,
-			settingsText1, settingsSubHeading2, settingsText2, settingsSubHeading3, settingsText3,
-			settingsSubHeading4, settingsText4, settingsSubHeading5, settingsText5, 
-			settingsSubHeading6, settingsText6;
+	private String howToPlayText, howToPlayHeading, settingsHeading; 
+	private String[] settingsTexts, settingsSubHeadings;
+	private static final int NUM_SETTINGS = 6;
 	
 	private JTabbedPane tabs;
 	private StyleContext sc;
@@ -31,7 +30,8 @@ public class HelpScreen extends JFrame {
 		super("Help Screen");
 		this.setSize(670,500);
 		this.setLocationRelativeTo(gui);
-
+		settingsTexts = new String[NUM_SETTINGS];
+		settingsSubHeadings = new String[NUM_SETTINGS];
 		initializeStrings();
 		sc = new StyleContext();
 		createStyles();
@@ -67,32 +67,32 @@ public class HelpScreen extends JFrame {
 			+ " started by clicking on the New Game button or by selecting \"New Game\" from the"
 			+ " \"Game\" menu.";
 		settingsHeading = "GAME SETTINGS";
-		settingsSubHeading1 = "\nShow Instructions";
-		settingsText1 = "\nBy default the game will instruct the player when to roll the dice"
+		settingsSubHeadings[0] = "\nShow Instructions";
+		settingsTexts[0] = "\nBy default the game will instruct the player when to roll the dice"
 			+ " and click on a tile. These instructions can be hidden by unchecking the \"Show"
 			+ " Instructions\" option from the View Menu.";
-		settingsSubHeading2 = "\n\nShow Win/Loss Statistics";
-		settingsText2 = "\nIf this option is selected from the View Menu, then the game"
+		settingsSubHeadings[1] = "\n\nShow Error Messages";
+		settingsTexts[1] = "\nBy default, an error message will be displayed when the player tries"
+			+ " to flip a tile that does not match the current dice roll. Uncheck this option in"
+			+ " the View Menu to disable these error messages.";
+		settingsSubHeadings[2] = "\n\nShow Win/Loss Statistics";
+		settingsTexts[2] = "\nIf this option is selected from the View Menu, then the game"
 			+ " will display statistics on the bottom of the screen for: number of wins, number"
 			+ " of losses, and the percentage of games won.";
-		settingsSubHeading3 = "\n\nShow Dice Animations";
-		settingsText3 = "\nBy default, dice animations are displayed. Dice animations can be"
-			+ " disabled by unchecking this option from the Settings Menu. The dice"
-			+ " values for a given roll will then be displayed immediately after rolling the dice.";
-		settingsSubHeading4 = "\n\nSelect Felt Color";
-		settingsText4 = "\nSelecting this option from the View Menu allows the player to"
+		settingsSubHeadings[3] = "\n\nSelect Felt Color";
+		settingsTexts[3] = "\nSelecting this option from the View Menu allows the player to"
 			+ " select a felt color from the sub menu. Available colors are blue, green, red and"
 			+ " black. The selected color will then be applied to the felt (background of the game"
 			+ " box).";
-		settingsSubHeading5 = "\n\nAutomatic Dice Roll";
-		settingsText5 = "\nSelect this option from the Settings Menu to enable automatic dice"
+		settingsSubHeadings[4] = "\n\nAutomatic Dice Roll";
+		settingsTexts[4] = "\nSelect this option from the Settings Menu to enable automatic dice"
 			+ " rolling. Once enabled, every time a player flips a tile (or at the start of a"
 			+ " new game), the dice will automatically be rolled without having to click on the"
 			+ " dice.";
-		settingsSubHeading6 = "\n\nShow Error Messages";
-		settingsText6 = "\nBy default, an error message will be displayed when the player tries"
-			+ " to flip a tile that does not match the current dice roll. Uncheck this option in"
-			+ " the View Menu to disable these error messages.";
+		settingsSubHeadings[5] = "\n\nShow Dice Animations";
+		settingsTexts[5] = "\nBy default, dice animations are displayed. Dice animations can be"
+			+ " disabled by unchecking this option from the Settings Menu. The dice"
+			+ " values for a given roll will then be displayed immediately after rolling the dice.";
 		
 	}
 	
@@ -133,18 +133,10 @@ public class HelpScreen extends JFrame {
                 
         try {
 			doc.insertString(doc.getLength(), settingsHeading, sc.getStyle("headingStyle"));
-			doc.insertString(doc.getLength(), settingsSubHeading1, sc.getStyle("subHeadingStyle"));
-			doc.insertString(doc.getLength(), settingsText1, sc.getStyle("mainStyle"));
-			doc.insertString(doc.getLength(), settingsSubHeading6, sc.getStyle("subHeadingStyle"));
-			doc.insertString(doc.getLength(), settingsText6, sc.getStyle("mainStyle"));
-			doc.insertString(doc.getLength(), settingsSubHeading2, sc.getStyle("subHeadingStyle"));
-			doc.insertString(doc.getLength(), settingsText2, sc.getStyle("mainStyle"));
-			doc.insertString(doc.getLength(), settingsSubHeading4, sc.getStyle("subHeadingStyle"));
-			doc.insertString(doc.getLength(), settingsText4, sc.getStyle("mainStyle"));
-			doc.insertString(doc.getLength(), settingsSubHeading5, sc.getStyle("subHeadingStyle"));
-			doc.insertString(doc.getLength(), settingsText5, sc.getStyle("mainStyle"));
-			doc.insertString(doc.getLength(), settingsSubHeading3, sc.getStyle("subHeadingStyle"));
-			doc.insertString(doc.getLength(), settingsText3, sc.getStyle("mainStyle"));
+			for(int i = 0; i < NUM_SETTINGS; ++i){
+				doc.insertString(doc.getLength(), settingsSubHeadings[i], sc.getStyle("subHeadingStyle"));
+				doc.insertString(doc.getLength(), settingsTexts[i], sc.getStyle("mainStyle"));
+			}
 			doc.setParagraphAttributes(0, settingsHeading.length(), sc.getStyle("headingStyle"), true);
 			
 		} catch (BadLocationException e) {
