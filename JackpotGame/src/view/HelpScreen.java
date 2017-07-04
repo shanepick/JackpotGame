@@ -28,7 +28,9 @@ public class HelpScreen extends JFrame {
 	
 	public HelpScreen(GUI gui,Tab tab){
 		super("Help Screen");
-		this.setSize(670,500);
+		int width = (int) Math.round(gui.getWidth() * 0.96);
+		int height = (int) Math.round(gui.getHeight() * 0.926);
+		this.setSize(width,height);
 		this.setLocationRelativeTo(gui);
 		settingsTexts = new String[NUM_SETTINGS];
 		settingsSubHeadings = new String[NUM_SETTINGS];
@@ -37,13 +39,16 @@ public class HelpScreen extends JFrame {
 		createStyles();
 		tabs = new JTabbedPane();
 		JScrollPane scrollPane1 = new JScrollPane(createSettingsScreen());
-        scrollPane1.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
+		JScrollPane scrollPane2 = new JScrollPane(createHowToPlayScreen());
+        scrollPane1.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
+		scrollPane2.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
         	public void run() { 
         		scrollPane1.getVerticalScrollBar().setValue(0);
+        		scrollPane2.getVerticalScrollBar().setValue(0);
         	}
         });
-		tabs.addTab("How To Play", createHowToPlayScreen());
+		tabs.addTab("How To Play", scrollPane2);
 		tabs.addTab("Settings", scrollPane1);
 		if(tab == Tab.SETTINGS)
 			tabs.setSelectedIndex(1);

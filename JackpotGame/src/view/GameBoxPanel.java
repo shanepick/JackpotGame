@@ -423,17 +423,6 @@ public class GameBoxPanel extends JPanel{
 			gameEngine.rollDice();
 	}
 	
-
-	
-/*	public void saveSettings(Properties settings) {
-		settings.setProperty("showInstructions", String.valueOf(showInstructions));
-		settings.setProperty("showAnimation", String.valueOf(showAnimation));
-		settings.setProperty("autoDiceRoll", String.valueOf(autoDiceRoll));
-		settings.setProperty("showErrorMessage", String.valueOf(showErrorMessage));
-	}*/
-
-
-	
 	private class GameBoxListener extends MouseAdapter{
 		
 		//de-scaled mouse coordinates
@@ -477,7 +466,6 @@ public class GameBoxPanel extends JPanel{
 					if(x > EDGE_WIDTH + i * TILE_WIDTH 
 							&& x <  EDGE_WIDTH + (i+1) * TILE_WIDTH){
 						currentMouseOver = i;
-						
 					}
 				}
 			}
@@ -502,8 +490,5 @@ public class GameBoxPanel extends JPanel{
 			}
 		}
 	}
-
-
-
 	
 }
