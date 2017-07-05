@@ -1,21 +1,16 @@
 package view;
 
-import java.awt.Point;
-import java.awt.Rectangle;
-
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
-import javax.swing.JViewport;
-import javax.swing.SwingConstants;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+@SuppressWarnings("serial")
 public class HelpScreen extends JFrame {
 	
 	private String howToPlayText, howToPlayHeading, settingsHeading; 
@@ -38,8 +33,8 @@ public class HelpScreen extends JFrame {
 		sc = new StyleContext();
 		createStyles();
 		tabs = new JTabbedPane();
-		JScrollPane scrollPane1 = new JScrollPane(createSettingsScreen());
-		JScrollPane scrollPane2 = new JScrollPane(createHowToPlayScreen());
+		JScrollPane scrollPane1 = new JScrollPane(createHowToPlayScreen());
+		JScrollPane scrollPane2 = new JScrollPane(createSettingsScreen());
         scrollPane1.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
 		scrollPane2.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -48,8 +43,8 @@ public class HelpScreen extends JFrame {
         		scrollPane2.getVerticalScrollBar().setValue(0);
         	}
         });
-		tabs.addTab("How To Play", scrollPane2);
-		tabs.addTab("Settings", scrollPane1);
+		tabs.addTab("How To Play", scrollPane1);
+		tabs.addTab("Settings", scrollPane2);
 		if(tab == Tab.SETTINGS)
 			tabs.setSelectedIndex(1);
 		this.getContentPane().add(tabs);

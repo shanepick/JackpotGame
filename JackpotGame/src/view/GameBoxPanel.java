@@ -19,7 +19,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Properties;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -32,8 +31,6 @@ import model.DiceResult;
 import model.GameEngine;
 import model.GameEngine.FlipTileOutcome;
 import model.GameEngine.GameState;
-
-
 
 @SuppressWarnings("serial")
 public class GameBoxPanel extends JPanel{
@@ -86,17 +83,22 @@ public class GameBoxPanel extends JPanel{
 										"You Lose.", 
 										"No More Moves Possible."};
 	private String errorMsg = "Invalid tile Selection";
-	
 	public enum FeltColor { BLUE, GREEN, RED, BLACK };
-	//Contains the players current felt color preference.
-	private FeltColor colorChoice;
+	private JButton newGameButton;
+	//tile number of the last tile that player moved mouse cursor over.
 	private int lastMouseOver = -1;
+	private GameEngine gameEngine;
+	
+	
+	//Game Settings and their default values:
+	
+	//Contains the players current felt color preference.
+	private FeltColor colorChoice = FeltColor.BLUE; 
 	private boolean showInstructions = true;
 	private boolean showAnimation = true;
 	private boolean autoDiceRoll = false;
 	private boolean showErrorMessage = true;
-	private JButton newGameButton;
-	private GameEngine gameEngine;
+
 	
 	
 	public GameBoxPanel(GameEngine gameEngine) {
@@ -105,7 +107,6 @@ public class GameBoxPanel extends JPanel{
 		tilesState = new boolean[NUM_TILES];
 		//All tiles start off un-flipped.
 		Arrays.fill(tilesState, false);
-		colorChoice = FeltColor.BLUE;
 		dieImage1 = new DieImage(1);
 		dieImage2 = new DieImage(1);
 		try {                
@@ -459,8 +460,11 @@ public class GameBoxPanel extends JPanel{
 		}
 		
 		public void mouseMoved(MouseEvent e){
+			//if mouse isn't positioned over any tile we use -1, so we are setting it to that by
+			//default.  Will over-ride with tile number if mouse is over a tile.
 			int currentMouseOver = - 1;
 			unscaleCoords(e.getX() - leftOffset, e.getY());
+			//check if mouse is over a tile
 			if(y > EDGE_WIDTH && y < TILE_HEIGHT + EDGE_WIDTH){
 				for(int i = 0; i < NUM_TILES; i++){
 					if(x > EDGE_WIDTH + i * TILE_WIDTH 
@@ -469,6 +473,9 @@ public class GameBoxPanel extends JPanel{
 					}
 				}
 			}
+			//if mouse has been moved such that it is no longer over the same tile as before,
+			//then must repaint so that mouse-over image is no longer used for previous tile
+			//(and mouse-over image must be used for new tile if mouse currently over tile).
 			if(currentMouseOver != lastMouseOver){
 				lastMouseOver = currentMouseOver;
 				GameBoxPanel.this.repaint();
@@ -478,11 +485,11 @@ public class GameBoxPanel extends JPanel{
 		private void unscaleCoords(int scaledX, int scaledY){
 			try{
 				AffineTransform inverseTransform = scaleTransform.createInverse();
-				Point deScaled = new Point();
-				inverseTransform.transform(new Point(scaledX, scaledY), deScaled);
-				x = deScaled.x;
-				y = deScaled.y;
-			//This exception can never happen since our simple Transform will 
+				Point unscaled = new Point();
+				inverseTransform.transform(new Point(scaledX, scaledY), unscaled);
+				x = unscaled.x;
+				y = unscaled.y;
+			//I believe this exception can never happen since our simple Transform will 
 			//always have an inverse.
 			} catch (NoninvertibleTransformException e1) {
 				// TODO Auto-generated catch block

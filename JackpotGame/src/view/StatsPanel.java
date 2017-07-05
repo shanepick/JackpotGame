@@ -49,25 +49,10 @@ public class StatsPanel extends JPanel{
 	public boolean getShowStats(){
 		return showStats;
 	}
-	
-	/*
-	public void showStats(){
-		numWinsLabel.setVisible(true);
-		numLossesLabel.setVisible(true);
-		percentWinLabel.setVisible(true);
-	}*/
-	
-	/*
-	public void hideStats(){
-		numWinsLabel.setVisible(false);
-		numLossesLabel.setVisible(false);
-		percentWinLabel.setVisible(false);
-	}*/
-	
-
 
 	public void setTextSize(double statsTextScaleFactor) {
 		if(statsTextScaleFactor > 1){
+			//don't allow font size to be greate than 26.
 			int textSize = (int) Math.min(statsTextScaleFactor * 14, 26);
 			Font font = new Font("SansSerif",Font.BOLD,textSize);
 			numWinsLabel.setFont(font);

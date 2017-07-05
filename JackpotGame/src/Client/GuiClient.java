@@ -9,7 +9,7 @@ public class GuiClient {
 	
 	private void runGame(){
 		GameEngine gameEngine = new GameEngine();
-		GUI gui = new GUI(gameEngine);
+		new GUI(gameEngine);
 	}
 	
 	public static void main(String Args[]){

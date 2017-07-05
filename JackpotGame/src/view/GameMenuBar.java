@@ -90,7 +90,6 @@ public class GameMenuBar extends JMenuBar{
 		showStats.setMnemonic(KeyEvent.VK_W);
 		showStats.setSelected(gui.getStatsPanel().getShowStats());
 		showStats.addActionListener(menuListener);
-		//showStats.setActionCommand("Stats");
 		viewMenu.add(showInstructions);
 		viewMenu.add(showErrorMsg);
 		viewMenu.add(showStats);

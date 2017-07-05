@@ -12,7 +12,6 @@ import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -43,6 +42,8 @@ public class GUI extends JFrame implements Display{
 	private StatsPanel statsPanel;
 	//Panel to combine gameBoxPanel and statsPanel into the one panel
 	private JPanel combinedPanel;
+	//if the window is changed from a normal state to something else such as a maximised
+	//state, then the previous values of height, width, and x and y coordinates are stored.
 	private int lastWidth, lastHeight, last_xCor, last_yCor;
 	private JLabel title;
 	
@@ -53,10 +54,15 @@ public class GUI extends JFrame implements Display{
 		gameBoxPanel = new GameBoxPanel(gameEngine);
 		gameBoxPanel.setAlignmentX(CENTER_ALIGNMENT);
 		statsPanel = new StatsPanel();;
+		//settings will be loaded and saved to statsPanel and gameBoxPanel.
+		//GUI window size and position will also be set by loadSettings function.
+		//If loadSettings not successful, default values are used.
 		if(loadSettings()==false){
 			this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 			this.setLocationByPlatform(true);
 		}
+		//important that menu created after settings loaded so that checkboxes
+		//on settings items in menu are correct.
 		menu = new GameMenuBar(gameEngine, this);
 		title = new JLabel("JACKPOT GAME");
 		title.setFont(new Font("serif",0,34));
@@ -77,6 +83,7 @@ public class GUI extends JFrame implements Display{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gameEngine.addDisplay(this);
 		this.setVisible(true);
+		//this is needed just so that automatic dice roll will work on start-up if selected.
 		gameBoxPanel.newGameUpdate();
 			
 	}
@@ -125,15 +132,6 @@ public class GUI extends JFrame implements Display{
 		
 	}
 	
-/*	public void setShowStats(boolean state){
-		showStats = state;
-		statsPanel.setVisible(showStats);
-	}
-	
-	public boolean getShowStats(){
-		return showStats;
-	}*/
-	
 	public void showHelpScreen(Tab tab) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -147,6 +145,8 @@ public class GUI extends JFrame implements Display{
 		File file = new File(FILENAME);
 		Properties settings = new Properties();
 		int xCor, yCor, width, height;
+		//if window in normal state, save current height/width and coords.
+		//if not in normal state, use the stored values from before state change.
 		if(this.getExtendedState()==Frame.NORMAL){
 			Point location = this.getLocationOnScreen();
 			xCor = location.x;
@@ -164,7 +164,6 @@ public class GUI extends JFrame implements Display{
 		settings.setProperty("y", String.valueOf(yCor));
 		settings.setProperty("w", String.valueOf(width));
 		settings.setProperty("h", String.valueOf(height));
-		//gameBoxPanel.saveSettings(settings);
 		settings.setProperty("showInstructions", String.valueOf(gameBoxPanel.getShowInstructions()));
 		settings.setProperty("showAnimation", String.valueOf(gameBoxPanel.getShowAnimation()));
 		settings.setProperty("autoDiceRoll", String.valueOf(gameBoxPanel.getAutoDiceRoll()));
@@ -177,7 +176,7 @@ public class GUI extends JFrame implements Display{
 			settings.store(br, "Game Settings");
 			br.close();
 		} catch (IOException e) {
-			System.err.println("Error: could not create file, settings not saved.");
+			System.err.println("Error writing game settings to file.");
 		}
 	}
 	
@@ -188,23 +187,25 @@ public class GUI extends JFrame implements Display{
         int x,y,h,w;
         boolean showInstructions, showAnimation, autoDiceRoll, showErrorMessage, showStats;
         FeltColor color;
+        //if the file doesn't exist or the file is corrupted then in an exception will
+        //be raised.  In this case, just return false so default values can be loaded.
 		try {
 			br = new BufferedReader(new FileReader(file));
 			settings.load(br);
+			x = Integer.parseInt(settings.getProperty("x","0"));
+			y = Integer.parseInt(settings.getProperty("y","0"));
+			String h_string = settings.getProperty("h");
+			String w_string = settings.getProperty("w");
+			if(h_string == null || w_string == null){
+				h = FRAME_HEIGHT;
+				w = FRAME_WIDTH;
+			}
+			else{
+				h = Integer.parseInt(h_string);
+				w = Integer.parseInt(w_string);
+			}
 		} catch (Exception e) {
 			return false;
-		}
-		x = Integer.parseInt(settings.getProperty("x","0"));
-		y = Integer.parseInt(settings.getProperty("y","0"));
-		String h_string = settings.getProperty("h");
-		String w_string = settings.getProperty("w");
-		if(h_string == null || w_string == null){
-			h = FRAME_HEIGHT;
-			w = FRAME_WIDTH;
-		}
-		else{
-			h = Integer.parseInt(h_string);
-			w = Integer.parseInt(w_string);
 		}
 		showInstructions = Boolean.parseBoolean(settings.getProperty("showInstructions","true"));
 		showAnimation = Boolean.parseBoolean(settings.getProperty("showAnimation","true"));
@@ -227,7 +228,6 @@ public class GUI extends JFrame implements Display{
 	    @Override
 		public void componentResized(ComponentEvent e) {
 			double scaleFactor = gameBoxPanel.scaleText();
-			//double statsTextScaleFactor = (double) getWidth() / FRAME_WIDTH;
 			statsPanel.setTextSize(scaleFactor);
 			double diff = scaleFactor - 1;
 			diff = diff/2;

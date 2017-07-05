@@ -63,7 +63,6 @@ public class GameEngine {
 					if(count++ < numRolls){
 						display.updateDiceIntermediate(intermediateRoll);
 						ses.schedule(this, delay, TimeUnit.MILLISECONDS);
-							
 					}
 					else{
 						currentRoll = intermediateRoll;
@@ -93,9 +92,10 @@ public class GameEngine {
 			return FlipTileOutcome.DICE_NOT_ROLLED;
 		}
 		//tile is able to be flipped
-		if(tilesState[tileNum-1] ==  false  && isValidMove(tileNum)){
+		if(tilesState[tileNum-1] ==  false && isValidMove(tileNum)){
 			tilesState[tileNum-1] = true;
 			display.flipTile(tileNum);
+			//if all tiles are flipped, then game is won.
 			if(++numTilesFlipped == NUM_TILES){
 				gameState = GameState.GAME_WON;
 				numWins++;
