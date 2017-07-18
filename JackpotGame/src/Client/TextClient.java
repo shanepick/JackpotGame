@@ -62,7 +62,7 @@ public class TextClient {
 			//clears buffer to get rid of \n char
 			sc.nextLine();
 			String input = sc.nextLine();
-			if(input.charAt(0) != 'y')
+			if(input.length() == 0 || input.charAt(0) != 'y')
 				playerContinue = false;
 			else
 				gameEngine.newGame();
