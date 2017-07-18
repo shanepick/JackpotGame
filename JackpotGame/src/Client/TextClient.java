@@ -8,6 +8,10 @@ import model.GameEngine.GameState;
 import view.Display;
 import view.TextDisplay;
 
+/**
+ * Class contains the main method for running the console version of the Jackpot Game.
+ * @author shane
+ */
 public class TextClient {
 	
 	private GameEngine gameEngine;
@@ -19,6 +23,9 @@ public class TextClient {
 		gameEngine.addDisplay(display);
 	}
 	
+	/**
+	 * Runs the game repeatedly until the player chooses to exit.
+	 */
 	public void runGame(){
 		boolean playerContinue = true;
 		Scanner sc = new Scanner(System.in);

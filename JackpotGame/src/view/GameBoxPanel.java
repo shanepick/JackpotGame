@@ -33,6 +33,16 @@ import model.GameEngine.FlipTileOutcome;
 import model.GameEngine.GameState;
 
 @SuppressWarnings("serial")
+
+/**
+ * This class controls the display of the gameBox image and it extends the JPanel class.
+ * The gameBox image contains the tiles and the area where the dice is rolled and player
+ * instructions are displayed.
+ * This class contains various methods that modify the display of the gameBox Panel and 
+ * its elements in response to various player actions and game events.
+ * @author shane
+ *
+ */
 public class GameBoxPanel extends JPanel{
 	
 	private static final int NUM_TILES = 9;
@@ -100,7 +110,10 @@ public class GameBoxPanel extends JPanel{
 	private boolean showErrorMessage = true;
 
 	
-	
+	/**
+	 * Constructor for GameBoxPanel
+	 * @param gameEngine
+	 */
 	public GameBoxPanel(GameEngine gameEngine) {
 		
 		this.gameEngine = gameEngine;
@@ -298,6 +311,11 @@ public class GameBoxPanel extends JPanel{
 	    return new Dimension(width, (int) (width/2.0) );
 	}
 
+	/**
+	 * changes the dice image to display the dice values specified in the dice parameter.
+	 * Also changes the instruction text to instruct the player to select a tile.
+	 * @param dice is the DiceResult containing the values that the dice should be changed to.
+	 */
 	public void updateDiceFinal(DiceResult dice) {
 		dieImage1.setDieValue(dice.getDie1());
 		dieImage2.setDieValue(dice.getDie2());
@@ -305,12 +323,20 @@ public class GameBoxPanel extends JPanel{
 		repaint();
 	}
 	
+	/**
+	 * changes the dice image to display the dice values specified in the dice parameter.
+	 * @param dice is the DiceResult containing the values that the dice should be changed to.
+	 */
 	public void updateDiceIntermediate(DiceResult dice) {
 		dieImage1.setDieValue(dice.getDie1());
 		dieImage2.setDieValue(dice.getDie2());
 		repaint();
 	}
 
+	/**
+	 * Updates the tile images so that tile with number tileNum is now displayed as flipped.
+	 * @param tileNum the number of the tile to be flipped.
+	 */
 	public void flipTile(int tileNum) {
 		//if dice rolled automatically, no need to give roll dice instruction.
 		if(!autoDiceRoll)
@@ -321,6 +347,10 @@ public class GameBoxPanel extends JPanel{
 		this.repaint();
 	}
 
+	/**
+	 * Shows a message to the player to indicate that they have lost the game.
+	 * Displays the new game button so that player can play again if desired.
+	 */
 	public void gameLostUpdate() {
 		instructionLabel.setText(instructions[3]);
 		//even if player has chosen to hide instructions, still want to 
@@ -331,6 +361,10 @@ public class GameBoxPanel extends JPanel{
 		this.repaint();
 	}
 
+	/**
+	 * Shows a message to the player to indicate that they have won the game.
+	 * Displays the new game button so that player can play again if desired.
+	 */
 	public void gameWonUpdate() {
 		//even if player has chosen to hide instructions, still want to
 		//display winning message to player.
@@ -341,6 +375,9 @@ public class GameBoxPanel extends JPanel{
 		
 	}
 
+	/**
+	 * Resets the gameBoxPanel image in readiness for a new game.
+	 */
 	public void newGameUpdate() {
 		Arrays.fill(tilesState, false);
 		if(!autoDiceRoll)
@@ -357,6 +394,17 @@ public class GameBoxPanel extends JPanel{
 			rollDice();
 	}
 	
+	/**
+	 * Scales the text based on the height and width of the gameBoxPanel.
+	 * Computes the scale factor by taking the smallest of current height divided by 
+	 * initial height and current width divided by initial width.
+	 * The font sizes are then changed to be the original font size multiplied by the
+	 * scale factor. Calling this method when the GUI window is resized ensures that
+	 * the text is scaled up or down along with the gameBox image.
+	 * The scale factor is ignored when it would make the font size below the minimum value 
+	 * (minimum value for font size is 8, or 6 for the text on the button. 
+	 * @return the scale factor value.
+	 */
 	public double scaleText() {
 		double scaleFactor = computeScaleFactor(getParent().getWidth(), getHeight());
 		int textSize = (int) Math.ceil(Math.max(8, 18 * scaleFactor));
@@ -424,6 +472,13 @@ public class GameBoxPanel extends JPanel{
 			gameEngine.rollDice();
 	}
 	
+	/**
+	 * This inner class is responsible for listening for mouse events so that action can be
+	 * taken when the dice or tiles have been clicked. The tile images are also changed based
+	 * on whether the mouse is currently over them.
+	 * @author shane
+	 *
+	 */
 	private class GameBoxListener extends MouseAdapter{
 		
 		//de-scaled mouse coordinates

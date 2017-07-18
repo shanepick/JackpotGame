@@ -5,6 +5,14 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+/**
+ * This class is for creating a buffered image that represents a face of a die.
+ * It extend the BufferedImage class.
+ * The die value must be specified in the constructor but can also be modified
+ * using the setDieValue() method.
+ * @author shane
+ *
+ */
 public class DieImage extends BufferedImage{
 
 	private final static int DICESIZE=51; //size of square to represent die.
@@ -20,10 +28,12 @@ public class DieImage extends BufferedImage{
 		//drawn over it, leaving a black border.
         g2d.fillRect(0,0, DICESIZE, DICESIZE);
         setDieValue(dieValue);
-		setDieValue(dieValue);
 	}
 	
-	
+	/**
+	 * draws over the die face such that it displays the value dieValue.
+	 * @param dieValue is the value to be shown on the die.
+	 */
 	public void setDieValue(int dieValue){
 		
 		if(dieValue < 1||dieValue > 6)

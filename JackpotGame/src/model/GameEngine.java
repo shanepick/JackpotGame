@@ -7,6 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 import view.Display;
 
+/**
+ * This class is the game engine, which contains methods for performing player actions as well 
+ * as keeping track of the game state.
+ * @author shane
+ *
+ */
 public class GameEngine {
 
 	private static final int NUM_TILES = 9;
@@ -31,8 +37,13 @@ public class GameEngine {
 		this.display = display;
 	}
 
-	
+	/**
+	 * Rolls the dice for the player and stores the DiceResult as the current roll.
+	 * Will call updateDiceFinal() for the display, so the dice can be displayed.
+	 * @return true if dice roll completed, otherwise returns false.
+	 */
 	public boolean rollDice(){
+		//don't want to allow player to roll dice again if already rolled
 		if(gameState != GameState.PRE_DICE_ROLL)
 			return false;
 		gameState = GameState.DURING_DICE_ROLL;
@@ -44,9 +55,24 @@ public class GameEngine {
 		
 	}
 	
+	/**
+	 * Rolls the dice for the player, and generates several intermediate DiceResults before
+	 * producing the final DiceResult to be stored as the current roll. These intermediate 
+	 * DiceResults can be used by the Display to simulate a rolling dice animation.
+	 * For the intermediate DiceResults updateDiceIntermediate() is called for the display.
+	 * For the final DiceResult updateDiceFinal() is called for the display.
+	 * The timing between each successive dice update is controlled by the delay parameter.
+	 * When numRolls is set to n, n-1 intermediate DiceResults will be produced, followed by 1
+	 * final DiceResult.
+	 * @param numRolls is the number of diceResults to be generated (including the final 
+	 * DiceResult).
+	 * @param delay is the number of milliseconds between each successive diceResult.
+	 * @throws IllegalArgumentException when numRolls is < 2 or delay < 0.
+	 * @return true if dice roll completed, otherwise returns false.
+	 */
 	public boolean rollDice(int numRolls, int delay){
 		
-		if(numRolls < 1)
+		if(numRolls < 2)
 			throw new IllegalArgumentException("numRolls must be positive integer");
 		if(delay < 0)
 			throw new IllegalArgumentException("delay value cannot be negative");
@@ -85,6 +111,18 @@ public class GameEngine {
 			gameState = GameState.POST_DICE_ROLL;
 	}
 	
+	/**
+	 * Changes the state of the nth tile (where n is specified by tileNum) to indicate 
+	 * the tile has been flipped.
+	 * @param tileNum - the tile number of the tile to be flipped.
+	 * (1st tile is tile number 1, not 0).
+	 * @return a FlipTileOutcome where the value is either:
+	 * 		DICE_NOT_ROLLED if not able to flip because the dice haven't been rolled yet.
+	 * 		TILE_ALREADY_FLIPPED if the tile specified by tileNum is already in a flipped state.
+	 * 		INVALID_MOVE if the tile specified by tileNum is not a valid move based on the current dice roll.
+	 * 		SUCCESS if the flipTile method completed successfully and the tile's state was changed.
+	 * @throws IllegalArgumentException if the tileNum is <= 0 or > NUM_TILES
+	 */
 	public FlipTileOutcome flipTile(int tileNum){
 		if(tileNum <= 0 || tileNum > NUM_TILES)
 			throw new IllegalArgumentException(Integer.toString(tileNum) + " is invalid tile number");
@@ -112,6 +150,10 @@ public class GameEngine {
 			return FlipTileOutcome.INVALID_MOVE;	
 	};
 	
+	/**
+	 * Resets the gameState to PRE_DICE_ROLL and resets all the tiles to an unflipped state.
+	 * newGameUpdate() is called for the display.
+	 */
 	public void newGame(){
 		gameState = GameState.PRE_DICE_ROLL;
 		resetTilesState();

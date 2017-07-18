@@ -16,6 +16,12 @@ import view.GameBoxPanel.FeltColor;
 import view.HelpScreen.Tab;
 
 @SuppressWarnings("serial")
+
+/**
+ * Class for creating the GameMenuBar to be used with the GUI
+ * @author shane
+ *
+ */
 public class GameMenuBar extends JMenuBar{
 
 	private GameEngine gameEngine;
@@ -125,6 +131,11 @@ public class GameMenuBar extends JMenuBar{
 		
 	}
 	
+	/**
+	 * This inner class is for listening to when menu options have been selected.
+	 * @author shane
+	 *
+	 */
 	public class MenuListener implements ActionListener {
 		
 		@Override

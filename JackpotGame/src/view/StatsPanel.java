@@ -6,6 +6,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
+
+/**
+ * This class is for the panel where the game statistics are displayed (extends JPanel).
+ * @author shane
+ *
+ */
 public class StatsPanel extends JPanel{
 
 	private JLabel numWinsLabel, numLossesLabel, percentWinLabel;

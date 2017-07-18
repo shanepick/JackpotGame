@@ -11,6 +11,12 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 @SuppressWarnings("serial")
+
+/**
+ * This class is for the Help screen which is a separate frame (extends JFrame).
+ * @author shane
+ *
+ */
 public class HelpScreen extends JFrame {
 	
 	private String howToPlayText, howToPlayHeading, settingsHeading; 
@@ -21,6 +27,13 @@ public class HelpScreen extends JFrame {
 	private StyleContext sc;
 	public enum Tab { HOW_TO_PLAY, SETTINGS };
 	
+	/**
+	 * Constructor for HelpScreen
+	 * @param gui is the GUI from which the Help screen has been created. 
+	 * The size of the help Screen will be proportional to the size of the GUI.
+	 * @param tab is the TAB which indicates which tab should be selected 
+	 * (either HOW_TO_PLAY or SETTINGS).
+	 */
 	public HelpScreen(GUI gui,Tab tab){
 		super("Help Screen");
 		int width = (int) Math.round(gui.getWidth() * 0.96);
@@ -96,7 +109,7 @@ public class HelpScreen extends JFrame {
 		
 	}
 	
-	public void createStyles() {
+	private void createStyles() {
         Style headingStyle = sc.addStyle("headingStyle", null);
         StyleConstants.setAlignment(headingStyle, StyleConstants.ALIGN_CENTER); 
         StyleConstants.setBold(headingStyle, true);

@@ -5,6 +5,11 @@ import javax.swing.SwingUtilities;
 import model.GameEngine;
 import view.GUI;
 
+/**
+ * Class contains the main method for running the GUI version of the Jackpot Game.
+ * @author shane
+ *
+ */
 public class GuiClient {
 	
 	private void runGame(){

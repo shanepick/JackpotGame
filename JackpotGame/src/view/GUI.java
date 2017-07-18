@@ -32,6 +32,17 @@ import view.GameBoxPanel.FeltColor;
 import view.HelpScreen.Tab;
 
 @SuppressWarnings("serial")
+
+/**
+ * This class extends JFrame and is the frame that the application runs in.
+ * The GameMenu, GameBoxPanel, and StatsPanel are all added to this frame.
+ * This class implements the Display interface and therefore contains the methods required to
+ * make changes to the GUI and its components in response to various player actions and game
+ * events.  The class is also responsible for loading and saving the player settings when the
+ * game starts and exits.
+ * @author shane
+ *
+ */
 public class GUI extends JFrame implements Display{
 	
 	private static final int FRAME_WIDTH = 700, FRAME_HEIGHT = 540;
@@ -132,6 +143,11 @@ public class GUI extends JFrame implements Display{
 		
 	}
 	
+	/**
+	 * Creates and displays a new Help Screen frame.
+	 * @param tab is which tab should be initially selected in the help screen when 
+	 * displayed (can either be SETTINGS or HOW_TO_PLAY)
+	 */
 	public void showHelpScreen(Tab tab) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -141,6 +157,11 @@ public class GUI extends JFrame implements Display{
         });
 	}
 	
+	/**
+	 * Saves information about the size and position of GUI so that it can be loaded when
+	 * the player next plays the game. Also saves the player's current settings as selected 
+	 * by menu options.
+	 */
 	public void saveSettings(){
 		File file = new File(FILENAME);
 		Properties settings = new Properties();
@@ -180,6 +201,11 @@ public class GUI extends JFrame implements Display{
 		}
 	}
 	
+	/**
+	 * Loads the settings that were saved when saveSettings() was called and
+	 * then applies settings accordingly.
+	 * @return true if settings loaded correctly, and returns false if error encountered.
+	 */
 	private boolean loadSettings(){
 		File file = new File(FILENAME);
         Properties settings = new Properties();
