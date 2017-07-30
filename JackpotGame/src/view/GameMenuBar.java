@@ -79,7 +79,20 @@ public class GameMenuBar extends JMenuBar{
 		bg.add(green);
 		bg.add(red);
 		bg.add(black);
-		blue.setSelected(true);
+		switch(gui.getGameBoxPanel().getColorChoice()){
+		case BLUE:
+			blue.setSelected(true);
+			break;
+		case GREEN:
+			green.setSelected(true);
+			break;
+		case RED:
+			red.setSelected(true);
+			break;
+		case BLACK:
+			black.setSelected(true);
+			break;
+		}
 		colorMenu.add(blue);
 		colorMenu.add(green);
 		colorMenu.add(red);
